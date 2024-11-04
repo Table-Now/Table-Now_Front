@@ -17,7 +17,9 @@ const StoreRegister: React.FC = () => {
     storeContents: "",
     storeOpen: "",
     storeClose: "",
+    storeWeekOff: "", // 문자열 형식으로 초기화
   });
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -43,6 +45,21 @@ const StoreRegister: React.FC = () => {
         }));
       };
     }
+  };
+
+  // 체크박스 변경 처리
+  const handleWeekOffChange = (day: string) => {
+    setFormData((prev) => {
+      const currentDays = prev.storeWeekOff.split(",").filter(Boolean);
+      if (currentDays.includes(day)) {
+        // 이미 체크된 경우, 제거
+        const updatedDays = currentDays.filter((d) => d !== day);
+        return { ...prev, storeWeekOff: updatedDays.join(",") };
+      } else {
+        // 체크되지 않은 경우, 추가
+        return { ...prev, storeWeekOff: [...currentDays, day].join(",") };
+      }
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -97,12 +114,7 @@ const StoreRegister: React.FC = () => {
 
         <FormGroup>
           <Label>상점 이미지</Label>
-          <Input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            // required
-          />
+          <Input type="file" accept="image/*" onChange={handleImageChange} />
         </FormGroup>
 
         <FormGroup>
@@ -139,6 +151,30 @@ const StoreRegister: React.FC = () => {
             />
           </FormGroup>
         </TimeContainer>
+
+        <FormGroup>
+          <Label>쉬는 날</Label>
+          <CheckboxGroup>
+            {[
+              "월요일",
+              "화요일",
+              "수요일",
+              "목요일",
+              "금요일",
+              "토요일",
+              "일요일",
+            ].map((day) => (
+              <CheckboxLabel key={day}>
+                <CheckboxInput
+                  type="checkbox"
+                  checked={formData.storeWeekOff.split(",").includes(day)}
+                  onChange={() => handleWeekOffChange(day)}
+                />
+                {day}
+              </CheckboxLabel>
+            ))}
+          </CheckboxGroup>
+        </FormGroup>
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
@@ -215,6 +251,21 @@ const TimeContainer = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
   margin-bottom: 1.5rem;
+`;
+
+const CheckboxGroup = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+const CheckboxLabel = styled.label`
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+`;
+
+const CheckboxInput = styled.input`
+  margin-right: 8px;
 `;
 
 const ErrorMessage = styled.div`

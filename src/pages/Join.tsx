@@ -26,9 +26,22 @@ const Join: React.FC = () => {
     }));
   };
 
+  const validatePhone = (phone: string) => {
+    const phonePattern = /^010\d{8}$/;
+    return phonePattern.test(phone);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (!validatePhone(formData.phone)) {
+      setError(
+        "휴대폰 번호는 010으로 시작하고 뒤에 8자리 숫자를 입력해야 합니다."
+      );
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -36,7 +49,9 @@ const Join: React.FC = () => {
       alert("회원가입이 완료되었습니다. 이메일 인증을 진행해주세요.");
       navigate("/login");
     } catch (err: any) {
-      setError(err.response?.data);
+      setError(
+        err.response?.data || "회원가입에 실패했습니다. 다시 시도해주세요."
+      );
     } finally {
       setLoading(false);
     }
@@ -87,7 +102,7 @@ const Join: React.FC = () => {
             type="tel"
             id="phone"
             name="phone"
-            label="전화번호"
+            label="휴대폰 번호"
             value={formData.phone}
             onChange={handleChange}
             required

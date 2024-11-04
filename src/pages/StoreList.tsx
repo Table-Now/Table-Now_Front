@@ -4,8 +4,10 @@ import { Store, SortType } from "../types/stores/list";
 import { storeApi } from "../api/store";
 import Button from "../components/Button";
 import { useUser } from "../hooks/useUser";
+import { useNavigate } from "react-router-dom";
 
 const StoreList: React.FC = () => {
+  const navigate = useNavigate();
   const { role } = useUser();
 
   const [stores, setStores] = useState<Store[]>([]);
@@ -94,6 +96,10 @@ const StoreList: React.FC = () => {
     getStores({});
   }, [getStores]);
 
+  const handleCardClick = (id: number) => {
+    navigate(`/store/${id}`);
+  };
+
   return (
     <Container>
       {role === "MANAGER" || role === "ADMIN" ? (
@@ -130,7 +136,7 @@ const StoreList: React.FC = () => {
           <NoResults>검색 결과가 없습니다.</NoResults>
         ) : (
           stores.map((store) => (
-            <StoreItem key={store.id}>
+            <StoreItem key={store.id} onClick={() => handleCardClick(store.id)}>
               <StoreImage
                 src={store.imageUrl || "/img/noimage.jpg"}
                 alt={store.title}

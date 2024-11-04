@@ -56,7 +56,10 @@ const Login = () => {
           onChange={handleChange}
           required
         />
-        <Button type="submit">로그인</Button>
+        <ButtonBox>
+          <Button type="submit">로그인</Button>
+          <Button to="/join">회원가입</Button>
+        </ButtonBox>
       </LoginForm>
     </LoginContainer>
   );
@@ -98,4 +101,10 @@ const ErrorMessage = styled.div`
   padding: 0.5rem;
   background-color: #fff0f0;
   border-radius: 4px;
+`;
+
+const ButtonBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 `;

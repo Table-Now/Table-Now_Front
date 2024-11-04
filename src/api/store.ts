@@ -4,6 +4,7 @@ import {
   StoreListParams,
   StoreRegisterParams,
 } from "../types/stores/list";
+import { StoreDetailType } from "../types/stores/detail";
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -25,6 +26,7 @@ export const storeApi = {
     const response = await axios.get<Store[]>(`${API_BASE_URL}store/list`, {
       params: apiParams,
     });
+    console.log(response.data);
     return response.data;
   },
 
@@ -34,6 +36,13 @@ export const storeApi = {
       params,
       { headers: getAuthHeader() }
     );
+    return response.data;
+  },
+
+  async getStoreDetail(id: number): Promise<StoreDetailType> {
+    const response = await axios.get(`${API_BASE_URL}store/detail`, {
+      params: { id },
+    });
     return response.data;
   },
 };

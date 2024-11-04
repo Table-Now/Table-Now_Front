@@ -6,6 +6,7 @@ import Header from "../common/Header";
 import Mypages from "../pages/Mypages";
 import EmailAuth from "../pages/EmailAuth";
 import Storeregister from "../pages/Storeregister";
+import StoreDetail from "../pages/StoreDetail";
 
 const AppRouter = () => {
   return (
@@ -49,6 +50,16 @@ const AppRouter = () => {
             <>
               <Header />
               <EmailAuth />
+            </>
+          }
+        />
+
+        <Route
+          path="/store/:id"
+          element={
+            <>
+              <Header />
+              <StoreDetail />
             </>
           }
         />
