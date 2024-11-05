@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { userApi } from "../api/user";
-import { RegisterFormData } from "../types/users/join";
-import Input from "../components/Input";
-import Button from "../components/Button";
+import { userApi } from "../../api/user";
+import { RegisterFormData } from "../../types/users/join";
+import Input from "../../components/Input";
+import Button from "../../components/Button";
 import { useNavigate } from "react-router-dom";
 
 const Join: React.FC = () => {

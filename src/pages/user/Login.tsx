@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { userApi } from "../api/user";
-import Input from "../components/Input";
-import { LoginFormData } from "../types/users/login";
-import Button from "../components/Button";
+import { userApi } from "../../api/user";
+import Input from "../../components/Input";
+import { LoginFormData } from "../../types/users/login";
+import Button from "../../components/Button";
 
 const Login = () => {
   const navigate = useNavigate();

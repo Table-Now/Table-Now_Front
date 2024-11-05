@@ -2,15 +2,15 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { userApi } from "../api/user";
-import { MyInfoResponse } from "../types/users/myInfo";
-import { RePassword } from "../types/users/passwordReset";
-import Button from "../components/Button";
-import { useUser } from "../hooks/useUser";
+import { userApi } from "../../api/user";
+import { MyInfoResponse } from "../../types/users/myInfo";
+import { RePassword } from "../../types/users/passwordReset";
+import Button from "../../components/Button";
+import { useUser } from "../../hooks/useUser";
 
 const Mypage: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useUser();
+  const { user, role } = useUser();
 
   const [userInfo, setUserInfo] = useState<MyInfoResponse | null>(null);
   const [showResetModal, setShowResetModal] = useState(false);
@@ -72,6 +72,10 @@ const Mypage: React.FC = () => {
     navigate("/login");
   };
 
+  const handleMyStore = () => {
+    navigate(`/store/manager/list/${user}`);
+  };
+
   return (
     <Container>
       <UserInfoSection>
@@ -103,6 +107,16 @@ const Mypage: React.FC = () => {
       </UserInfoSection>
 
       <ButtonBox>
+        {role === "USER" ? (
+          <></>
+        ) : (
+          <>
+            <Button type="button" onClick={handleMyStore}>
+              내 상점 목록
+            </Button>
+          </>
+        )}
+
         <Button type="button" onClick={logoutHandler}>
           로그아웃
         </Button>

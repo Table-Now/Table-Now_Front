@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
-import { Store, SortType } from "../types/stores/list";
-import { storeApi } from "../api/store";
-import Button from "../components/Button";
-import { useUser } from "../hooks/useUser";
+import { Store, SortType } from "../../types/stores/list";
+import { storeApi } from "../../api/store";
+import Button from "../../components/Button";
+import { useUser } from "../../hooks/useUser";
 import { useNavigate } from "react-router-dom";
 
 const StoreList: React.FC = () => {
@@ -49,8 +49,8 @@ const StoreList: React.FC = () => {
         const response = await storeApi.getStoreList(apiParams);
         const transformedData = response.map(transformStoreData);
         setStores(transformedData);
-      } catch (error) {
-        console.error("Failed to fetch stores:", error);
+      } catch (err: any) {
+        alert(err.response?.data);
       } finally {
         setLoading(false);
       }

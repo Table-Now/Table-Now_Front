@@ -39,3 +39,14 @@ export interface StoreRegisterParams {
   storeOpen: string;
   storeClose: string;
 }
+
+export interface ManagerStoreList {
+  store: string;
+  storeLocation: string;
+  storeImg: string;
+  rating: number;
+  storeOpen: string;
+  storeClose: string;
+  storeWeekOff: string;
+  storeContents: string;
+}

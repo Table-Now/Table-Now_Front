@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { storeApi } from "../api/store";
+import { storeApi } from "../../api/store";
 import { useNavigate } from "react-router-dom";
-import Button from "../components/Button";
-import { useUser } from "../hooks/useUser";
+import Button from "../../components/Button";
+import { useUser } from "../../hooks/useUser";
 
 const StoreRegister: React.FC = () => {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ const StoreRegister: React.FC = () => {
     storeContents: "",
     storeOpen: "",
     storeClose: "",
-    storeWeekOff: "", // 문자열 형식으로 초기화
+    storeWeekOff: "",
   });
 
   const [loading, setLoading] = useState(false);

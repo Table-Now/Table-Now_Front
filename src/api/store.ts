@@ -26,7 +26,6 @@ export const storeApi = {
     const response = await axios.get<Store[]>(`${API_BASE_URL}store/list`, {
       params: apiParams,
     });
-    console.log(response.data);
     return response.data;
   },
 
@@ -39,9 +38,35 @@ export const storeApi = {
     return response.data;
   },
 
-  async getStoreDetail(id: number): Promise<StoreDetailType> {
+  getStoreDetail: async (id: number) => {
     const response = await axios.get(`${API_BASE_URL}store/detail`, {
       params: { id },
+    });
+    return response.data;
+  },
+
+  updateStore: async (id: number, storeData: StoreDetailType) => {
+    const response = await axios.put(`${API_BASE_URL}store/update`, storeData, {
+      params: { id },
+      headers: getAuthHeader(),
+    });
+    return response.data;
+  },
+
+  deleteStore: async (id: number) => {
+    const response = await axios.delete(`${API_BASE_URL}store/delete`, {
+      params: { id },
+      headers: getAuthHeader(),
+    });
+    return response.data;
+  },
+};
+
+export const managerStoreApi = {
+  storeList: async (userId: string | null) => {
+    const response = await axios.get(`${API_BASE_URL}manager/list`, {
+      params: { userId },
+      headers: getAuthHeader(),
     });
     return response.data;
   },
