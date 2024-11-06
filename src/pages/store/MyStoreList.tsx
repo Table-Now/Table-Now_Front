@@ -13,8 +13,10 @@ const MyStoreList: React.FC = () => {
   useEffect(() => {
     const fetchStores = async () => {
       try {
-        const response = await managerStoreApi.storeList(user);
-        setStores(response);
+        if (user) {
+          const response = await managerStoreApi.storeList(user);
+          setStores(response);
+        }
       } catch (error) {
         console.error("Error fetching stores:", error);
       }
@@ -23,8 +25,8 @@ const MyStoreList: React.FC = () => {
     fetchStores();
   }, [user]);
 
-  const handleCardClick = (userId: string) => {
-    navigate(`/store/${userId}`);
+  const handleCardClick = (user: string) => {
+    navigate(`/store/${user}`);
   };
 
   return (

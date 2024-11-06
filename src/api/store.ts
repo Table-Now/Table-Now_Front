@@ -63,9 +63,9 @@ export const storeApi = {
 };
 
 export const managerStoreApi = {
-  storeList: async (userId: string | null) => {
+  storeList: async (user: string) => {
     const response = await axios.get(`${API_BASE_URL}manager/list`, {
-      params: { userId },
+      params: { user },
       headers: getAuthHeader(),
     });
     return response.data;
