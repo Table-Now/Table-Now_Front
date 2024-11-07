@@ -9,6 +9,7 @@ import Storeregister from "../pages/store/Storeregister";
 import StoreDetail from "../pages/store/StoreDetail";
 import StoreUpdate from "../pages/store/StoreUpdate";
 import MyStoreList from "../pages/store/MyStoreList";
+import Testing from "../pages/Testing";
 
 const AppContent = () => {
   const location = useLocation();
@@ -29,6 +30,7 @@ const AppContent = () => {
         <Route path="/store/:id" element={<StoreDetail />} />
         <Route path="/store/update/:id" element={<StoreUpdate />} />
         <Route path="/store/manager/list/:user" element={<MyStoreList />} />
+        <Route path="/test/page" element={<Testing />} />
       </Routes>
     </>
   );

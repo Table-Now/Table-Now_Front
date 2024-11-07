@@ -5,16 +5,19 @@ import { StoreDetailType } from "../../types/stores/detail";
 import styled from "styled-components";
 import Button from "../../components/Button";
 import { useUser } from "../../hooks/useUser";
+import ReservationModal from "../../components/modal/ReservationModal";
 
 const StoreDetail: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { user } = useUser();
+  const { user, role } = useUser();
   const [storeDetail, setStoreDetail] = useState<StoreDetailType | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const getStoreDetail = useCallback(async () => {
     try {
       const response = await storeApi.getStoreDetail(Number(id));
+
       setStoreDetail(response);
     } catch (err: any) {
       alert(err.response?.data);
@@ -28,7 +31,6 @@ const StoreDetail: React.FC = () => {
   if (!storeDetail) {
     return <LoadingMessage>Loading store details...</LoadingMessage>;
   }
-
   const handlerStoreUpdate = () => {
     navigate(`/store/update/${id}`);
   };
@@ -43,12 +45,31 @@ const StoreDetail: React.FC = () => {
     }
   };
 
+  const openReservationModal = () => {
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      alert("로그인을 진행해주세요");
+      navigate("/login");
+    } else {
+      setIsModalOpen(true);
+    }
+  };
+
+  const closeReservationModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <DetailContainer>
       {user === storeDetail.user && (
         <ButtonBox>
           <Button onClick={handlerStoreUpdate}>수정</Button>
           <Button onClick={handlerStoreDelete}>삭제</Button>
+        </ButtonBox>
+      )}
+      {(role === "USER" || role == null) && (
+        <ButtonBox>
+          <Button onClick={openReservationModal}>예약하기</Button>
         </ButtonBox>
       )}
 
@@ -75,6 +96,16 @@ const StoreDetail: React.FC = () => {
           <Label>Week Off:</Label> {storeDetail.storeWeekOff}
         </DetailRow>
       </InfoSection>
+
+      <ReservationModal
+        isOpen={isModalOpen}
+        onClose={closeReservationModal}
+        storeName={storeDetail?.store ?? ""}
+        user={user ?? ""}
+        storeOpen={storeDetail?.storeOpen ?? ""}
+        storeClose={storeDetail?.storeClose ?? ""}
+        storeWeekOff={storeDetail?.storeWeekOff ?? ""}
+      />
     </DetailContainer>
   );
 };
