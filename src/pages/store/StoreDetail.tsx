@@ -6,13 +6,15 @@ import styled from "styled-components";
 import Button from "../../components/Button";
 import { useUser } from "../../hooks/useUser";
 import ReservationModal from "../../components/modal/ReservationModal";
+import { reservationApi } from "../../api/reservation";
 
 const StoreDetail: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { user, role } = useUser();
   const [storeDetail, setStoreDetail] = useState<StoreDetailType | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isReserved, setIsReserved] = useState<boolean>(false);
 
   const getStoreDetail = useCallback(async () => {
     try {
@@ -24,9 +26,24 @@ const StoreDetail: React.FC = () => {
     }
   }, [id]);
 
+  const checkReservation = useCallback(async () => {
+    if (user && id) {
+      try {
+        const reservationStatus = await reservationApi.reservationCheck({
+          user,
+          id: Number(id),
+        });
+        setIsReserved(reservationStatus);
+      } catch (err: any) {
+        console.error("Failed to check reservation status:", err);
+      }
+    }
+  }, [user, id]);
+
   useEffect(() => {
     getStoreDetail();
-  }, [getStoreDetail]);
+    checkReservation();
+  }, [getStoreDetail, checkReservation]);
 
   if (!storeDetail) {
     return <LoadingMessage>Loading store details...</LoadingMessage>;
@@ -55,6 +72,14 @@ const StoreDetail: React.FC = () => {
     }
   };
 
+  const handleReservationAction = () => {
+    if (isReserved) {
+      navigate(`/my/reservation/list/${user}`);
+    } else {
+      openReservationModal();
+    }
+  };
+
   const closeReservationModal = () => {
     setIsModalOpen(false);
   };
@@ -69,7 +94,9 @@ const StoreDetail: React.FC = () => {
       )}
       {(role === "USER" || role == null) && (
         <ButtonBox>
-          <Button onClick={openReservationModal}>예약하기</Button>
+          <Button onClick={handleReservationAction}>
+            {isReserved ? "예약 중" : "예약하기"}
+          </Button>
         </ButtonBox>
       )}
 

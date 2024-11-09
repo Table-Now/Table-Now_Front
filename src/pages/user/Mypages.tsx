@@ -72,10 +72,6 @@ const Mypage: React.FC = () => {
     navigate("/login");
   };
 
-  const handleMyStore = () => {
-    navigate(`/store/manager/list/${user}`);
-  };
-
   return (
     <Container>
       <UserInfoSection>
@@ -107,12 +103,13 @@ const Mypage: React.FC = () => {
       </UserInfoSection>
 
       <ButtonBox>
-        {role === "USER" ? (
-          <></>
-        ) : (
+        {role === "USER" && (
           <>
-            <Button type="button" onClick={handleMyStore}>
-              내 상점 목록
+            <Button
+              type="button"
+              onClick={() => navigate(`/my/reservation/list/${user}`)}
+            >
+              예약 현황
             </Button>
           </>
         )}

@@ -1,4 +1,11 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useLocation,
+  Navigate,
+} from "react-router-dom";
+import { useEffect, ReactNode } from "react";
 import Join from "../pages/user/Join";
 import StoreList from "../pages/store/StoreList";
 import Login from "../pages/user/Login";
@@ -9,13 +16,26 @@ import Storeregister from "../pages/store/Storeregister";
 import StoreDetail from "../pages/store/StoreDetail";
 import StoreUpdate from "../pages/store/StoreUpdate";
 import MyStoreList from "../pages/store/MyStoreList";
-import Testing from "../pages/Testing";
+import MyReservationList from "../pages/reservation/MyReservationList";
 
-const AppContent = () => {
+interface ProtectedRouteProps {
+  element: JSX.Element;
+}
+
+const AppContent: React.FC = () => {
   const location = useLocation();
   const hideHeaderRoutes = ["/login", "/join"];
 
   const showHeader = !hideHeaderRoutes.includes(location.pathname);
+
+  const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
+    const token = sessionStorage.getItem("token");
+
+    if (!token) {
+      return <Navigate to="/login" replace />;
+    }
+    return element;
+  };
 
   return (
     <>
@@ -24,19 +44,31 @@ const AppContent = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/join" element={<Join />} />
         <Route path="/" element={<StoreList />} />
-        <Route path="/mypage" element={<Mypages />} />
+        <Route
+          path="/mypage"
+          element={<ProtectedRoute element={<Mypages />} />}
+        />
         <Route path="/storeregister" element={<Storeregister />} />
         <Route path="/auth" element={<EmailAuth />} />
         <Route path="/store/:id" element={<StoreDetail />} />
-        <Route path="/store/update/:id" element={<StoreUpdate />} />
-        <Route path="/store/manager/list/:user" element={<MyStoreList />} />
-        <Route path="/test/page" element={<Testing />} />
+        <Route
+          path="/store/update/:id"
+          element={<ProtectedRoute element={<StoreUpdate />} />}
+        />
+        <Route
+          path="/store/manager/list/:user"
+          element={<ProtectedRoute element={<MyStoreList />} />}
+        />
+        <Route
+          path="/my/reservation/list/:user"
+          element={<MyReservationList />}
+        />
       </Routes>
     </>
   );
 };
 
-const AppRouter = () => {
+const AppRouter: React.FC = () => {
   return (
     <BrowserRouter>
       <AppContent />
