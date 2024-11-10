@@ -23,6 +23,7 @@ const StoreDetail: React.FC = () => {
       setStoreDetail(response);
     } catch (err: any) {
       alert(err.response?.data);
+      navigate("/");
     }
   }, [id]);
 
@@ -48,6 +49,7 @@ const StoreDetail: React.FC = () => {
   if (!storeDetail) {
     return <LoadingMessage>Loading store details...</LoadingMessage>;
   }
+
   const handlerStoreUpdate = () => {
     navigate(`/store/update/${id}`);
   };

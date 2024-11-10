@@ -1,4 +1,5 @@
 export interface myReservationListTypes {
+  id: number;
   phone: string;
   store: string;
   reserDateTime: string;

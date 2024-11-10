@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { myReservationListTypes } from "../../types/reservation/myList";
 import { reservationApi } from "../../api/reservation";
 import { useUser } from "../../hooks/useUser";
+import { useNavigate } from "react-router-dom";
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -16,6 +17,7 @@ const formatDate = (dateString: string) => {
 };
 
 const MyReservationList: React.FC = () => {
+  const navigate = useNavigate();
   const { user } = useUser();
   const [reservations, setReservations] = useState<myReservationListTypes[]>(
     []
@@ -57,38 +59,48 @@ const MyReservationList: React.FC = () => {
     );
   }
 
+  const handleCardClick = (id: number) => {
+    navigate(`/store/${id}`);
+  };
+
   return (
     <Container>
       <Title>나의 예약 내역</Title>
-      <ReservationGrid>
-        {reservations.map((reservation, index) => (
-          <ReservationCard key={index}>
-            <ReservationHeader>
-              <StoreName>{reservation.store}</StoreName>
-
-              <StatusBadge $status={reservation.reservationStatus}>
-                {reservation.reservationStatus === "REQ" && "예약 대기"}
-                {reservation.reservationStatus === "ING" && "예약 확정"}
-                {reservation.reservationStatus === "STOP" && "예약 취소"}
-              </StatusBadge>
-            </ReservationHeader>
-            <ReservationInfo>
-              <InfoItem>
-                <Label>예약 일시</Label>
-                <Value>{formatDate(reservation.reserDateTime)}</Value>
-              </InfoItem>
-              <InfoItem>
-                <Label>인원</Label>
-                <Value>{reservation.peopleNb}명</Value>
-              </InfoItem>
-              <InfoItem>
-                <Label>연락처</Label>
-                <Value>{reservation.phone}</Value>
-              </InfoItem>
-            </ReservationInfo>
-          </ReservationCard>
-        ))}
-      </ReservationGrid>
+      {reservations.length === 0 ? (
+        <NoResults>예약된 정보가 없습니다</NoResults>
+      ) : (
+        <ReservationGrid>
+          {reservations.map((reservation) => (
+            <ReservationCard
+              key={reservation.id}
+              onClick={() => handleCardClick(reservation.id)}
+            >
+              <ReservationHeader>
+                <StoreName>{reservation.store}</StoreName>
+                <StatusBadge $status={reservation.reservationStatus}>
+                  {reservation.reservationStatus === "REQ" && "예약 대기"}
+                  {reservation.reservationStatus === "ING" && "예약 확정"}
+                  {reservation.reservationStatus === "STOP" && "예약 취소"}
+                </StatusBadge>
+              </ReservationHeader>
+              <ReservationInfo>
+                <InfoItem>
+                  <Label>예약 일시</Label>
+                  <Value>{formatDate(reservation.reserDateTime)}</Value>
+                </InfoItem>
+                <InfoItem>
+                  <Label>인원</Label>
+                  <Value>{reservation.peopleNb}명</Value>
+                </InfoItem>
+                <InfoItem>
+                  <Label>연락처</Label>
+                  <Value>{reservation.phone}</Value>
+                </InfoItem>
+              </ReservationInfo>
+            </ReservationCard>
+          ))}
+        </ReservationGrid>
+      )}
     </Container>
   );
 };
@@ -97,6 +109,12 @@ const Container = styled.div`
   max-width: 1200px;
   margin: 2rem auto;
   padding: 0 1rem;
+`;
+
+const NoResults = styled.div`
+  text-align: center;
+  padding: 2rem;
+  color: #666;
 `;
 
 const LoadingWrapper = styled.div`
