@@ -48,7 +48,10 @@ const AppContent: React.FC = () => {
           path="/mypage"
           element={<ProtectedRoute element={<Mypages />} />}
         />
-        <Route path="/storeregister" element={<Storeregister />} />
+        <Route
+          path="/storeregister"
+          element={<ProtectedRoute element={<Storeregister />} />}
+        />
         <Route path="/auth" element={<EmailAuth />} />
         <Route path="/store/:id" element={<StoreDetail />} />
         <Route
@@ -61,7 +64,7 @@ const AppContent: React.FC = () => {
         />
         <Route
           path="/my/reservation/list/:user"
-          element={<MyReservationList />}
+          element={<ProtectedRoute element={<MyReservationList />} />}
         />
       </Routes>
     </>

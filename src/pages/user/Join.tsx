@@ -120,6 +120,11 @@ const Join: React.FC = () => {
             </Button>
           </ButtonBox>
         </Form>
+        <Announce>
+          매장을 운영하시는 분은
+          <Mail>jominuk1025@naver.com</Mail>으로 사업자 등록증을 보내주시면
+          감사하겠습니다.
+        </Announce>
       </FormWrapper>
     </Container>
   );
@@ -165,4 +170,14 @@ const ErrorMessage = styled.p`
   color: #ff0033;
   font-size: 0.9rem;
   margin: 0.5rem 0;
+`;
+
+const Announce = styled.div`
+  text-align: center;
+  margin: 5px 0;
+  font-size: 12px;
+`;
+
+const Mail = styled.div`
+  color: blue;
 `;
