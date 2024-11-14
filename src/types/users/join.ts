@@ -13,8 +13,6 @@ export interface RegisterResponse {
   email: string;
   phone: string;
   emailAuthYn: boolean;
-  emailAuthDt: string;
-  emailAuthKey: string;
   role: string;
   managerYn: boolean;
   userStatus: string;
