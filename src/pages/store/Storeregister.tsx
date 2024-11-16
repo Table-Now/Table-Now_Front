@@ -75,7 +75,9 @@ const StoreRegister: React.FC = () => {
       };
 
       await storeApi.registerStore(submitData);
-      alert("상점이 성공적으로 등록되었습니다.");
+      alert(
+        "예약 되었습니다.\n자세한 내용은 가입하신 메일을 확인해 주시기 바랍니다.\n감사합니다!"
+      );
       navigate("/");
     } catch (error: any) {
       setError(error.response?.data || "상점 등록에 실패했습니다.");
