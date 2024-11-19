@@ -9,17 +9,18 @@ const GlobalStyle = createGlobalStyle`
 
   html, body {
     width: 100%;
-    height: 100%;
+    height: 100vh;
     font-family: 'Arial', sans-serif;
     background-color: #f8f9fa;
     color: #333;
     overflow-x: hidden;
   }
 
-  /* 모바일 중심 뷰포트 스타일링 */
-  body {
-    max-width: 768px; /* 최대 너비: 태블릿 크기 */
-    margin: 0 auto;
+  /* 중앙 정렬 대신 최대 너비 제한 */
+  #root, .app-container {
+    max-width: 768px; /* 최대 너비 설정 */
+    margin: 0 auto; /* 중앙 정렬 */
+    overflow-x: hidden; /* x축 스크롤 방지 */
   }
 
   /* 글꼴 및 기본 텍스트 스타일 */
@@ -41,7 +42,7 @@ const GlobalStyle = createGlobalStyle`
 
   /* 반응형 스타일 */
   @media (max-width: 768px) {
-    body {
+    #root, .app-container {
       padding: 0 1rem; /* 태블릿 이하의 여백 */
     }
   }

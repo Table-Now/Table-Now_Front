@@ -7,6 +7,10 @@ import Button from "../../components/Button";
 import { useUser } from "../../hooks/useUser";
 import ReservationModal from "../../components/modal/ReservationModal";
 import { reservationApi } from "../../api/reservation";
+import ReviewForm from "../review/ReviewForm";
+import ReviewList from "../review/ReviewList";
+import { reviewApi } from "../../api/review";
+import { ReviewListTypes } from "../../types/review/Review";
 
 const StoreDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -15,6 +19,8 @@ const StoreDetail: React.FC = () => {
   const [storeDetail, setStoreDetail] = useState<StoreDetailType | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isReserved, setIsReserved] = useState<boolean>(false);
+
+  const [reviews, setReviews] = useState<ReviewListTypes[]>([]);
 
   const getStoreDetail = useCallback(async () => {
     try {
@@ -25,7 +31,7 @@ const StoreDetail: React.FC = () => {
       alert(err.response?.data);
       navigate("/");
     }
-  }, [id]);
+  }, [id, navigate]);
 
   const checkReservation = useCallback(async () => {
     if (user && id) {
@@ -41,10 +47,22 @@ const StoreDetail: React.FC = () => {
     }
   }, [user, id]);
 
+  const fetchReviews = useCallback(async () => {
+    if (storeDetail?.store) {
+      try {
+        const data = await reviewApi.getReview(storeDetail.store);
+        setReviews(data);
+      } catch (error: any) {
+        alert(error.response?.data);
+      }
+    }
+  }, [storeDetail?.store]);
+
   useEffect(() => {
     getStoreDetail();
     checkReservation();
-  }, [getStoreDetail, checkReservation]);
+    fetchReviews();
+  }, [getStoreDetail, checkReservation, fetchReviews]);
 
   if (!storeDetail) {
     return <LoadingMessage>Loading store details...</LoadingMessage>;
@@ -86,56 +104,68 @@ const StoreDetail: React.FC = () => {
     setIsModalOpen(false);
   };
 
+  const handleReviewSubmitted = (newReview: ReviewListTypes) => {
+    setReviews((prevReviews) => [newReview, ...prevReviews]);
+  };
+
   return (
-    <DetailContainer>
-      {user === storeDetail.user && (
-        <ButtonBox>
-          <Button onClick={handlerStoreUpdate}>수정</Button>
-          <Button onClick={handlerStoreDelete}>삭제</Button>
-        </ButtonBox>
-      )}
-      {(role === "USER" || role == null) && (
-        <ButtonBox>
-          <Button onClick={handleReservationAction}>
-            {isReserved ? "예약 중" : "예약하기"}
-          </Button>
-        </ButtonBox>
-      )}
+    <>
+      <DetailContainer>
+        {user === storeDetail.user && (
+          <ButtonBox>
+            <Button onClick={handlerStoreUpdate}>수정</Button>
+            <Button onClick={handlerStoreDelete}>삭제</Button>
+          </ButtonBox>
+        )}
+        {(role === "USER" || role == null) && (
+          <ButtonBox>
+            <Button onClick={handleReservationAction}>
+              {isReserved ? "예약 중" : "예약하기"}
+            </Button>
+          </ButtonBox>
+        )}
 
-      <Image
-        src={storeDetail.storeImg || "/img/noimage.jpg"}
-        alt={storeDetail.store}
-      />
-      <InfoSection>
-        <Title>{storeDetail.store}</Title>
-        <Description>{storeDetail.storeContents}</Description>
-        <DetailRow>
-          <Label>Location:</Label> {storeDetail.storeLocation}
-        </DetailRow>
-        <DetailRow>
-          <Label>Rating:</Label> {storeDetail.rating ?? 0}
-        </DetailRow>
-        <DetailRow>
-          <Label>Open:</Label> {storeDetail.storeOpen}
-        </DetailRow>
-        <DetailRow>
-          <Label>Close:</Label> {storeDetail.storeClose}
-        </DetailRow>
-        <DetailRow>
-          <Label>Week Off:</Label> {storeDetail.storeWeekOff}
-        </DetailRow>
-      </InfoSection>
+        <Image
+          src={storeDetail.storeImg || "/img/noimage.jpg"}
+          alt={storeDetail.store}
+        />
+        <InfoSection>
+          <Title>{storeDetail.store}</Title>
+          <Description>{storeDetail.storeContents}</Description>
+          <DetailRow>
+            <Label>Location:</Label> {storeDetail.storeLocation}
+          </DetailRow>
+          <DetailRow>
+            <Label>Rating:</Label> {storeDetail.rating ?? 0}
+          </DetailRow>
+          <DetailRow>
+            <Label>Open:</Label> {storeDetail.storeOpen}
+          </DetailRow>
+          <DetailRow>
+            <Label>Close:</Label> {storeDetail.storeClose}
+          </DetailRow>
+          <DetailRow>
+            <Label>Week Off:</Label> {storeDetail.storeWeekOff}
+          </DetailRow>
+        </InfoSection>
 
-      <ReservationModal
-        isOpen={isModalOpen}
-        onClose={closeReservationModal}
-        storeName={storeDetail?.store ?? ""}
-        user={user ?? ""}
-        storeOpen={storeDetail?.storeOpen ?? ""}
-        storeClose={storeDetail?.storeClose ?? ""}
-        storeWeekOff={storeDetail?.storeWeekOff ?? ""}
+        <ReservationModal
+          isOpen={isModalOpen}
+          onClose={closeReservationModal}
+          storeName={storeDetail?.store ?? ""}
+          user={user ?? ""}
+          storeOpen={storeDetail?.storeOpen ?? ""}
+          storeClose={storeDetail?.storeClose ?? ""}
+          storeWeekOff={storeDetail?.storeWeekOff ?? ""}
+        />
+      </DetailContainer>
+
+      <ReviewForm
+        store={storeDetail.store ?? ""}
+        onReviewSubmitted={handleReviewSubmitted}
       />
-    </DetailContainer>
+      <ReviewList reviews={reviews} />
+    </>
   );
 };
 
@@ -151,10 +181,12 @@ const DetailContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 50px auto;
+  width: 95%;
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 12px;
-  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.4);
 `;
 
 const Image = styled.img`
