@@ -5,7 +5,6 @@ import {
   useLocation,
   Navigate,
 } from "react-router-dom";
-import { useEffect, ReactNode } from "react";
 import Join from "../pages/user/Join";
 import StoreList from "../pages/store/StoreList";
 import Login from "../pages/user/Login";
@@ -24,7 +23,7 @@ interface ProtectedRouteProps {
 
 const AppContent: React.FC = () => {
   const location = useLocation();
-  const hideHeaderRoutes = ["/login", "/join"];
+  const hideHeaderRoutes = ["/login", "/join", "/auth", "/storeregister"];
 
   const showHeader = !hideHeaderRoutes.includes(location.pathname);
 

@@ -30,16 +30,6 @@ export interface StoreListParams {
   userLon?: number;
 }
 
-export interface StoreRegisterParams {
-  user: string;
-  store: string;
-  storeLocation: string;
-  storeImg: string;
-  storeContents: string;
-  storeOpen: string;
-  storeClose: string;
-}
-
 export interface ManagerStoreList {
   store: string;
   storeLocation: string;

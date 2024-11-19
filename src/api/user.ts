@@ -4,6 +4,7 @@ import { LoginFormData, LoginResponse } from "../types/users/login";
 import { RePassword } from "../types/users/passwordReset";
 import { Delete } from "../types/users/delete";
 import { MyInfoResponse } from "../types/users/myInfo";
+import { EmailAuthResponse } from "../types/users/emailAuth";
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -52,6 +53,20 @@ export const userApi = {
         headers: getAuthHeader(),
       }
     );
+    return response.data;
+  },
+  verifyEmail: async (
+    user: string,
+    key: string
+  ): Promise<EmailAuthResponse> => {
+    const response = await axios.get<EmailAuthResponse>(
+      `${API_BASE_URL}user/email-auth`,
+      {
+        params: { user, key },
+      }
+    );
+
+    console.log("api" + response);
     return response.data;
   },
 };

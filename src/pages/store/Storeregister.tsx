@@ -20,6 +20,7 @@ const StoreRegister: React.FC = () => {
     storeWeekOff: "",
   });
 
+  const [storeImg, setStoreImg] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,33 +34,22 @@ const StoreRegister: React.FC = () => {
     }));
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = () => {
-        setFormData((prev) => ({
-          ...prev,
-          storeImg: reader.result as string,
-        }));
-      };
-    }
-  };
-
-  // 체크박스 변경 처리
   const handleWeekOffChange = (day: string) => {
     setFormData((prev) => {
       const currentDays = prev.storeWeekOff.split(",").filter(Boolean);
       if (currentDays.includes(day)) {
-        // 이미 체크된 경우, 제거
         const updatedDays = currentDays.filter((d) => d !== day);
         return { ...prev, storeWeekOff: updatedDays.join(",") };
       } else {
-        // 체크되지 않은 경우, 추가
         return { ...prev, storeWeekOff: [...currentDays, day].join(",") };
       }
     });
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setStoreImg(e.target.files[0]);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -68,19 +58,27 @@ const StoreRegister: React.FC = () => {
     setLoading(true);
 
     try {
-      // user를 formData에 직접 추가
-      const submitData = {
+      const formDataToSend = new FormData();
+
+      const storeData = {
         ...formData,
         user: user || "",
       };
-
-      await storeApi.registerStore(submitData);
-      alert(
-        "예약 되었습니다.\n자세한 내용은 가입하신 메일을 확인해 주시기 바랍니다.\n감사합니다!"
+      formDataToSend.append(
+        "dto",
+        new Blob([JSON.stringify(storeData)], {
+          type: "application/json",
+        })
       );
+
+      if (storeImg) {
+        formDataToSend.append("image", storeImg);
+      }
+
+      await storeApi.registerStore(formDataToSend);
       navigate("/");
     } catch (error: any) {
-      setError(error.response?.data || "상점 등록에 실패했습니다.");
+      setError(error.response?.data);
     } finally {
       setLoading(false);
     }

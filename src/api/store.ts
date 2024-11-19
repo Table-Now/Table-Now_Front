@@ -1,9 +1,5 @@
 import axios from "axios";
-import {
-  Store,
-  StoreListParams,
-  StoreRegisterParams,
-} from "../types/stores/list";
+import { Store, StoreListParams } from "../types/stores/list";
 import { StoreDetailType } from "../types/stores/detail";
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -29,11 +25,16 @@ export const storeApi = {
     return response.data;
   },
 
-  registerStore: async (params: StoreRegisterParams) => {
-    const response = await axios.post<StoreRegisterParams>(
+  registerStore: async (formData: FormData) => {
+    const response = await axios.post(
       `${API_BASE_URL}store/register`,
-      params,
-      { headers: getAuthHeader() }
+      formData,
+      {
+        headers: {
+          ...getAuthHeader(),
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
     return response.data;
   },
