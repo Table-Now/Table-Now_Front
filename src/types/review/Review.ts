@@ -10,4 +10,16 @@ export interface ReviewListTypes {
   contents: string;
   createAt: string;
   user: string;
+  store?: string;
+  role?: string;
+}
+
+export interface ReviewListProps {
+  reviews: ReviewListTypes[];
+  onReviewDeleted: (reviewId: number) => void;
+}
+
+export interface ReviewFormProps {
+  store: string;
+  onReviewSubmitted: (newReview: ReviewListTypes) => void;
 }

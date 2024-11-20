@@ -107,6 +107,11 @@ const StoreDetail: React.FC = () => {
   const handleReviewSubmitted = (newReview: ReviewListTypes) => {
     setReviews((prevReviews) => [newReview, ...prevReviews]);
   };
+  const handleReviewDeleted = (deletedReviewId: number) => {
+    setReviews((prevReviews) =>
+      prevReviews.filter((review) => review.id !== deletedReviewId)
+    );
+  };
 
   return (
     <>
@@ -117,13 +122,14 @@ const StoreDetail: React.FC = () => {
             <Button onClick={handlerStoreDelete}>삭제</Button>
           </ButtonBox>
         )}
-        {(role === "USER" || role == null) && (
-          <ButtonBox>
-            <Button onClick={handleReservationAction}>
-              {isReserved ? "예약 중" : "예약하기"}
-            </Button>
-          </ButtonBox>
-        )}
+        {sessionStorage.getItem("token") &&
+          (role === "USER" || role == null) && (
+            <ButtonBox>
+              <Button onClick={handleReservationAction}>
+                {isReserved ? "예약 중" : "예약하기"}
+              </Button>
+            </ButtonBox>
+          )}
 
         <Image
           src={storeDetail.storeImg || "/img/noimage.jpg"}
@@ -160,11 +166,14 @@ const StoreDetail: React.FC = () => {
         />
       </DetailContainer>
 
-      <ReviewForm
-        store={storeDetail.store ?? ""}
-        onReviewSubmitted={handleReviewSubmitted}
-      />
-      <ReviewList reviews={reviews} />
+      {sessionStorage.getItem("token") && (
+        <ReviewForm
+          store={storeDetail.store ?? ""}
+          onReviewSubmitted={handleReviewSubmitted}
+        />
+      )}
+
+      <ReviewList reviews={reviews} onReviewDeleted={handleReviewDeleted} />
     </>
   );
 };

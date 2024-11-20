@@ -25,4 +25,26 @@ export const reviewApi = {
     );
     return response.data;
   },
+
+  deleteReview: async (id: number, user: string | null) => {
+    const response = await axios.delete(
+      `${API_BASE_URL}review/delete?user=${user}&id=${id}`,
+      { headers: getAuthHeader() }
+    );
+    return response.data;
+  },
+
+  // updateReview: async (updateData: {
+  //   id: number;
+  //   user: string;
+  //   store: string;
+  //   contents: string;
+  // }) => {
+  //   const response = await axios.put(
+  //     `${API_BASE_URL}review/update`,
+  //     updateData,
+  //     { headers: getAuthHeader() }
+  //   );
+  //   return response.data;
+  // },
 };

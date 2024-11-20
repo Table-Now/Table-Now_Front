@@ -1,12 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
+import { ReviewListProps, ReviewListTypes } from "../../types/review/Review";
+import Button from "../../components/Button";
+import { useUser } from "../../hooks/useUser";
 import { reviewApi } from "../../api/review";
-import { ReviewListTypes } from "../../types/review/Review";
-interface ReviewListProps {
-  reviews: ReviewListTypes[];
-}
 
-const ReviewList: React.FC<ReviewListProps> = ({ reviews }) => {
+const ReviewList: React.FC<ReviewListProps> = ({
+  reviews,
+  onReviewDeleted,
+}) => {
+  const { user } = useUser();
+
+  const handleDelete = async (review: ReviewListTypes) => {
+    try {
+      await reviewApi.deleteReview(review.id, user);
+      onReviewDeleted(review.id);
+      alert("리뷰가 삭제되었습니다.");
+    } catch (err: any) {
+      alert(err.response?.data);
+    }
+  };
+
   return (
     <ReviewListContainer>
       {reviews.length === 0 ? (
@@ -18,6 +32,13 @@ const ReviewList: React.FC<ReviewListProps> = ({ reviews }) => {
               <Username>{review.user}</Username>
             </ReviewHeader>
             <ReviewContent>{review.contents}</ReviewContent>
+            {sessionStorage.getItem("token") && user === review.user && (
+              <ButtonContainer>
+                <StyledButton onClick={() => handleDelete(review)}>
+                  삭제
+                </StyledButton>
+              </ButtonContainer>
+            )}
           </ReviewItem>
         ))
       )}
@@ -43,6 +64,8 @@ const ReviewItem = styled.div`
   border-radius: 8px;
   padding: 15px;
   margin-bottom: 15px;
+  position: relative;
+  padding-bottom: 50px;
 `;
 
 const ReviewHeader = styled.div`
@@ -55,16 +78,20 @@ const Username = styled.span`
   font-weight: bold;
 `;
 
-const Rating = styled.span`
-  color: #f39c12;
-`;
-
 const ReviewContent = styled.p`
   margin-bottom: 10px;
 `;
 
-const ReviewDate = styled.span`
-  color: #777;
+const ButtonContainer = styled.div`
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  display: flex;
+  gap: 10px;
+`;
+
+const StyledButton = styled(Button)`
+  padding: 5px 10px;
   font-size: 0.9em;
 `;
 

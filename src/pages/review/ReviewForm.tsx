@@ -3,12 +3,7 @@ import styled from "styled-components";
 import { reviewApi } from "../../api/review";
 import { useUser } from "../../hooks/useUser";
 import Button from "../../components/Button";
-import { ReviewListTypes, ReviewRegister } from "../../types/review/Review";
-
-interface ReviewFormProps {
-  store: string;
-  onReviewSubmitted: (newReview: ReviewListTypes) => void;
-}
+import { ReviewFormProps, ReviewRegister } from "../../types/review/Review";
 
 const ReviewForm: React.FC<ReviewFormProps> = ({
   store,
