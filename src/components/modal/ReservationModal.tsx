@@ -8,8 +8,8 @@ interface ReservationModalProps {
   onClose: () => void;
   storeName: string;
   user: string;
-  storeOpen: string;
-  storeClose: string;
+  storeOpen: string; // 예: "10:00"
+  storeClose: string; // 예: "22:00"
   storeWeekOff: string;
 }
 
@@ -22,17 +22,23 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
   storeClose,
   storeWeekOff,
 }) => {
-  const [phone, setPhone] = useState("");
-  const [reservationDate, setReservationDate] = useState("");
-  const [reservationTime, setReservationTime] = useState("");
+  const [phone, setPhone] = useState<string>("");
+  const [reservationTime, setReservationTime] = useState<string>("");
   const [peopleNb, setPeopleNb] = useState(1);
   const [timeOptions, setTimeOptions] = useState<string[]>([]);
 
+  // 시간을 10분 단위로 생성하고, 오픈 시간과 클로즈 시간 사이만 보여주기
   useEffect(() => {
     const generateTimeOptions = () => {
       const options = [];
-      for (let hour = 0; hour < 24; hour++) {
-        for (let minute = 0; minute < 60; minute += 10) {
+      const [openHour, openMinute] = storeOpen.split(":").map(Number);
+      const [closeHour, closeMinute] = storeClose.split(":").map(Number);
+
+      for (let hour = openHour; hour <= closeHour; hour++) {
+        const startMinute = hour === openHour ? openMinute : 0;
+        const endMinute = hour === closeHour ? closeMinute : 59;
+
+        for (let minute = startMinute; minute <= endMinute; minute += 10) {
           const timeString = `${hour.toString().padStart(2, "0")}:${minute
             .toString()
             .padStart(2, "0")}`;
@@ -43,16 +49,15 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
     };
 
     generateTimeOptions();
-  }, []);
+  }, [storeOpen, storeClose]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const reserDateTime = `${reservationDate}T${reservationTime}:00`;
     const reservationData: ReservationRequest = {
       userId: user,
       phone,
       store: storeName,
-      reserDateTime,
+      reservationTime: reservationTime,
       peopleNb,
     };
 
@@ -80,16 +85,6 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
               id="phone"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              required
-            />
-          </InputGroup>
-          <InputGroup>
-            <label htmlFor="reservationDate">예약 날짜:</label>
-            <input
-              type="date"
-              id="reservationDate"
-              value={reservationDate}
-              onChange={(e) => setReservationDate(e.target.value)}
               required
             />
           </InputGroup>

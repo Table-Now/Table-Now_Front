@@ -11,6 +11,7 @@ import ReviewForm from "../review/ReviewForm";
 import ReviewList from "../review/ReviewList";
 import { reviewApi } from "../../api/review";
 import { ReviewListTypes } from "../../types/review/Review";
+import { wishlistApi } from "../../api/wishlist";
 
 const StoreDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const StoreDetail: React.FC = () => {
   const [storeDetail, setStoreDetail] = useState<StoreDetailType | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isReserved, setIsReserved] = useState<boolean>(false);
+  const [isLiked, setIsLiked] = useState<boolean>(false);
 
   const [reviews, setReviews] = useState<ReviewListTypes[]>([]);
 
@@ -58,11 +60,22 @@ const StoreDetail: React.FC = () => {
     }
   }, [storeDetail?.store]);
 
+  // 좋아요 상태 조회
+  const fetchLikeStatus = useCallback(async () => {
+    try {
+      const result = await wishlistApi.isLiked(Number(id));
+      setIsLiked(result);
+    } catch (err: any) {
+      console.error("Failed to fetch like status:", err);
+    }
+  }, [id]);
+
   useEffect(() => {
     getStoreDetail();
     checkReservation();
     fetchReviews();
-  }, [getStoreDetail, checkReservation, fetchReviews]);
+    fetchLikeStatus(); // 페이지 로드 시 좋아요 상태 조회
+  }, [getStoreDetail, checkReservation, fetchReviews, fetchLikeStatus]);
 
   if (!storeDetail) {
     return <LoadingMessage>Loading store details...</LoadingMessage>;
@@ -113,6 +126,15 @@ const StoreDetail: React.FC = () => {
     );
   };
 
+  const handleLikeToggle = async () => {
+    try {
+      const result = await wishlistApi.toggleLike(Number(id));
+      setIsLiked(result); // 좋아요 상태 업데이트
+    } catch (err: any) {
+      alert(err.response?.data);
+    }
+  };
+
   return (
     <>
       <DetailContainer>
@@ -153,6 +175,17 @@ const StoreDetail: React.FC = () => {
           <DetailRow>
             <Label>Week Off:</Label> {storeDetail.storeWeekOff}
           </DetailRow>
+
+          <TitleRow>
+            {sessionStorage.getItem("token") && (
+              <LikeButton onClick={handleLikeToggle}>
+                <LikeIcon
+                  src={isLiked ? "/img/unlike.png" : "/img/like.png"}
+                  alt="Like"
+                />
+              </LikeButton>
+            )}
+          </TitleRow>
         </InfoSection>
 
         <ReservationModal
@@ -196,6 +229,7 @@ const DetailContainer = styled.div`
   background-color: #f9f9f9;
   border-radius: 12px;
   box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.4);
+  position: relative; /* 추가 */
 `;
 
 const Image = styled.img`
@@ -248,4 +282,36 @@ const LoadingMessage = styled.div`
   text-align: center;
   padding: 20px;
   color: #888;
+`;
+
+const TitleRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+`;
+
+const LikeButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  transition: transform 0.2s ease;
+  position: absolute; /* 수정 */
+  bottom: 10px; /* 오른쪽 아래로 배치 */
+  right: 10px; /* 오른쪽 아래로 배치 */
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+const LikeIcon = styled.img`
+  width: 100px;
+  height: 100px;
+  transition: filter 0.2s ease;
 `;

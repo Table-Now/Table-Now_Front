@@ -2,7 +2,7 @@ export interface ReservationRequest {
   userId: string;
   phone: string;
   store: string;
-  reserDateTime: string;
+  reservationTime: string;
   peopleNb: number;
 }
 
@@ -10,7 +10,7 @@ export interface ReservationResponse {
   userId?: string;
   phone: string;
   store: string;
-  reserDateTime: string;
+  reservationTime: string;
   peopleNb: number;
   reservationStatus: string;
 }

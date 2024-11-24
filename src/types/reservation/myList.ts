@@ -2,7 +2,7 @@ export interface myReservationListTypes {
   id: number;
   phone: string;
   store: string;
-  reserDateTime: string;
+  reservationTime: string;
   peopleNb: number;
   reservationStatus: string;
 }
