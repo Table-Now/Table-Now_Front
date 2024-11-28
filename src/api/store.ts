@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Store, StoreListParams } from "../types/stores/list";
 import { StoreDetailType } from "../types/stores/detail";
+import { instance } from "./instance";
 
 const API_BASE_URL =
   process.env.REACT_APP_API_BASE_URL || "https://backend.tablenow.org/";
@@ -20,7 +21,7 @@ export const storeApi = {
       ...(params.userLon && { userLon: params.userLon }),
     };
 
-    const response = await axios.get<Store[]>(`${API_BASE_URL}store/list`, {
+    const response = await instance.get<Store[]>(`${API_BASE_URL}store/list`, {
       params: apiParams,
     });
     return response.data;
