@@ -16,7 +16,7 @@ const getAuthHeader = () => {
 export const reservationApi = {
   register: async (data: ReservationRequest): Promise<ReservationResponse> => {
     const response = await axios.post<ReservationResponse>(
-      `/reservation/request`,
+      `${API_BASE_URL}reservation/request`,
       data,
       { headers: getAuthHeader() }
     );
@@ -25,7 +25,7 @@ export const reservationApi = {
 
   reservationCheck: async (data: ReservationCheck): Promise<boolean> => {
     const response = await axios.get<boolean>(
-      `/reservation/myrelist?user=${data.user}&id=${data.id}`,
+      `${API_BASE_URL}reservation/myrelist?user=${data.user}&id=${data.id}`,
       { headers: getAuthHeader() }
     );
     return response.data;
@@ -35,7 +35,7 @@ export const reservationApi = {
     user: string | null
   ): Promise<myReservationListTypes> => {
     const response = await axios.get<myReservationListTypes>(
-      `/reservation/reserlist?user=${user}`,
+      `${API_BASE_URL}reservation/reserlist?user=${user}`,
       { headers: getAuthHeader() }
     );
     return response.data;

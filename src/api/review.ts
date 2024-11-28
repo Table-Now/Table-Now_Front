@@ -10,22 +10,25 @@ const getAuthHeader = () => {
 
 export const reviewApi = {
   registerReview: async (formData: ReviewRegister) => {
-    const response = await axios.post(`/review/register`, formData, {
-      headers: getAuthHeader(),
-    });
+    const response = await axios.post(
+      `${API_BASE_URL}review/register`,
+      formData,
+      { headers: getAuthHeader() }
+    );
     return response.data;
   },
 
   getReview: async (store: string) => {
-    const response = await axios.get(`/review/list?store=${store}`, {
-      headers: getAuthHeader(),
-    });
+    const response = await axios.get(
+      `${API_BASE_URL}review/list?store=${store}`,
+      { headers: getAuthHeader() }
+    );
     return response.data;
   },
 
   deleteReview: async (id: number, user: string | null) => {
     const response = await axios.delete(
-      `/review/delete?user=${user}&id=${id}`,
+      `${API_BASE_URL}review/delete?user=${user}&id=${id}`,
       { headers: getAuthHeader() }
     );
     return response.data;
