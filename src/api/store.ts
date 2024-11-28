@@ -1,4 +1,3 @@
-import axios from "axios";
 import { Store, StoreListParams } from "../types/stores/list";
 import { StoreDetailType } from "../types/stores/detail";
 import { instance } from "./instance";
@@ -28,7 +27,7 @@ export const storeApi = {
   },
 
   registerStore: async (formData: FormData) => {
-    const response = await axios.post(
+    const response = await instance.post(
       `${API_BASE_URL}store/register`,
       formData,
       {
@@ -42,22 +41,26 @@ export const storeApi = {
   },
 
   getStoreDetail: async (id: number) => {
-    const response = await axios.get(`${API_BASE_URL}store/detail`, {
+    const response = await instance.get(`${API_BASE_URL}store/detail`, {
       params: { id },
     });
     return response.data;
   },
 
   updateStore: async (id: number, storeData: StoreDetailType) => {
-    const response = await axios.put(`${API_BASE_URL}store/update`, storeData, {
-      params: { id },
-      headers: getAuthHeader(),
-    });
+    const response = await instance.put(
+      `${API_BASE_URL}store/update`,
+      storeData,
+      {
+        params: { id },
+        headers: getAuthHeader(),
+      }
+    );
     return response.data;
   },
 
   deleteStore: async (id: number) => {
-    const response = await axios.delete(`${API_BASE_URL}store/delete`, {
+    const response = await instance.delete(`${API_BASE_URL}store/delete`, {
       params: { id },
       headers: getAuthHeader(),
     });
@@ -67,7 +70,7 @@ export const storeApi = {
 
 export const managerStoreApi = {
   storeList: async (user: string) => {
-    const response = await axios.get(`${API_BASE_URL}manager/list`, {
+    const response = await instance.get(`${API_BASE_URL}manager/list`, {
       params: { user },
       headers: getAuthHeader(),
     });
