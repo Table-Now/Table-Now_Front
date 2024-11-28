@@ -10,7 +10,7 @@ const getAuthHeader = () => {
 export const wishlistApi = {
   toggleLike: async (storeId: number): Promise<boolean> => {
     try {
-      const response = await axios.post(`${API_BASE_URL}wishlist/like`, null, {
+      const response = await axios.post(`/wishlist/like`, null, {
         params: { id: storeId },
         headers: getAuthHeader(),
       });
@@ -22,7 +22,7 @@ export const wishlistApi = {
 
   isLiked: async (storeId: number): Promise<boolean> => {
     try {
-      const response = await axios.get(`${API_BASE_URL}wishlist/isLiked`, {
+      const response = await axios.get(`/wishlist/isLiked`, {
         params: { id: storeId },
         headers: getAuthHeader(),
       });

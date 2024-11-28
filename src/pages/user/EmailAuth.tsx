@@ -149,21 +149,10 @@ const StatusContainer = styled.div`
   padding: 2rem 0;
 `;
 
-const StatusIcon = styled.div<{ success: boolean }>`
-  font-size: 3.5rem;
-  margin-bottom: 1rem;
-  color: ${(props) => (props.success ? "#10B981" : "#EF4444")};
-`;
-
 const StatusMessage = styled.div`
   font-size: 1.125rem;
   color: "#059669";
   margin-bottom: 1rem;
-`;
-
-const RedirectMessage = styled.p`
-  color: #6b7280;
-  margin-top: 1rem;
 `;
 
 const Button = styled.button`
