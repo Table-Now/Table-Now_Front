@@ -20,7 +20,7 @@ export const storeApi = {
       ...(params.userLon && { userLon: params.userLon }),
     };
 
-    const response = await instance.get<Store[]>(`${API_BASE_URL}store/list`, {
+    const response = await instance.get<Store[]>(`store/list`, {
       params: apiParams,
     });
     return response.data;
