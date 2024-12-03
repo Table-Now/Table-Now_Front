@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { storeApi } from "../../api/store";
 import { StoreDetailType } from "../../types/stores/detail";
@@ -35,14 +35,6 @@ const StoreDetail: React.FC = () => {
       navigate("/");
     }
   }, [id, navigate]);
-
-  // 오늘 날짜 조회
-  const isHoliday = useMemo(() => {
-    const today = new Date().toLocaleDateString("ko-KR", {
-      weekday: "long",
-    });
-    return today === storeDetail?.storeWeekOff;
-  }, [storeDetail]);
 
   const checkReservation = useCallback(async () => {
     if (user && id) {
@@ -153,12 +145,11 @@ const StoreDetail: React.FC = () => {
             <Button onClick={handlerStoreDelete}>삭제</Button>
           </ButtonBox>
         )}
-
         {sessionStorage.getItem("token") &&
           (role === "USER" || role == null) && (
             <ButtonBox>
-              <Button onClick={handleReservationAction} disabled={isHoliday}>
-                {isHoliday ? "휴무" : isReserved ? "대기중" : "원격줄서기"}
+              <Button onClick={handleReservationAction}>
+                {isReserved ? "대기중" : "원격줄서기"}
               </Button>
             </ButtonBox>
           )}
@@ -194,7 +185,7 @@ const StoreDetail: React.FC = () => {
           </DetailRow>
 
           <TitleRow>
-            {sessionStorage.getItem("token") && (
+            {sessionStorage.getItem("token") && role === "USER" && (
               <LikeButton onClick={handleLikeToggle}>
                 <LikeIcon
                   src={isLiked ? "/img/unlike.png" : "/img/like.png"}

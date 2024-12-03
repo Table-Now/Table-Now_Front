@@ -16,13 +16,7 @@ export interface Store {
   distance?: number | null;
 }
 
-export type SortType =
-  | "ALL"
-  | "DISTANCE"
-  | "RATING_HIGH"
-  | "RATING_LOW"
-  | "NAME_ASC"
-  | "NAME_DESC";
+export type SortType = "ALL" | "DISTANCE" | "RATING_HIGH" | "RATING_LOW";
 export interface StoreListParams {
   keyword?: string;
   sortType?: SortType;

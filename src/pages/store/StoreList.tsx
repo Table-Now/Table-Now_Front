@@ -124,8 +124,6 @@ const StoreList: React.FC = () => {
           <option value="DISTANCE">거리순</option>
           <option value="RATING_HIGH">평점 높은순</option>
           <option value="RATING_LOW">평점 낮은순</option>
-          <option value="NAME_ASC">이름 오름차순</option>
-          <option value="NAME_DESC">이름 내림차순</option>
         </SortSelect>
       </SearchSection>
 
