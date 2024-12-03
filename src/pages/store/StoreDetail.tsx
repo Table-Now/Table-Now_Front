@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { storeApi } from "../../api/store";
 import { StoreDetailType } from "../../types/stores/detail";
@@ -12,6 +12,7 @@ import ReviewList from "../review/ReviewList";
 import { reviewApi } from "../../api/review";
 import { ReviewListTypes } from "../../types/review/Review";
 import { wishlistApi } from "../../api/wishlist";
+import KakaoMap from "../../components/KakaoMap";
 
 const StoreDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -34,6 +35,14 @@ const StoreDetail: React.FC = () => {
       navigate("/");
     }
   }, [id, navigate]);
+
+  // 오늘 날짜 조회
+  const isHoliday = useMemo(() => {
+    const today = new Date().toLocaleDateString("ko-KR", {
+      weekday: "long",
+    });
+    return today === storeDetail?.storeWeekOff;
+  }, [storeDetail]);
 
   const checkReservation = useCallback(async () => {
     if (user && id) {
@@ -144,11 +153,12 @@ const StoreDetail: React.FC = () => {
             <Button onClick={handlerStoreDelete}>삭제</Button>
           </ButtonBox>
         )}
+
         {sessionStorage.getItem("token") &&
           (role === "USER" || role == null) && (
             <ButtonBox>
-              <Button onClick={handleReservationAction}>
-                {isReserved ? "예약 중" : "예약하기"}
+              <Button onClick={handleReservationAction} disabled={isHoliday}>
+                {isHoliday ? "휴무" : isReserved ? "대기중" : "원격줄서기"}
               </Button>
             </ButtonBox>
           )}
@@ -157,6 +167,13 @@ const StoreDetail: React.FC = () => {
           src={storeDetail.storeImg || "/img/noimage.jpg"}
           alt={storeDetail.store}
         />
+
+        <KakaoMap
+          latitude={storeDetail.latitude}
+          longitude={storeDetail.longitude}
+          storeName={storeDetail.store}
+        />
+
         <InfoSection>
           <Title>{storeDetail.store}</Title>
           <Description>{storeDetail.storeContents}</Description>

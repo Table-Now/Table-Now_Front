@@ -5,6 +5,7 @@ import { userApi } from "../../api/user";
 import Input from "../../components/Input";
 import { LoginFormData } from "../../types/users/login";
 import Button from "../../components/Button";
+import { KAKAO_AUTH_URL } from "./KakaoLogin";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -60,6 +61,12 @@ const Login = () => {
           <Button type="submit">로그인</Button>
           <Button to="/join">회원가입</Button>
         </ButtonBox>
+
+        <KakaoButton>
+          <a href={KAKAO_AUTH_URL}>
+            <img alt="kakao_login" src="/img/kakao_login.jpg"></img>
+          </a>
+        </KakaoButton>
       </LoginForm>
     </LoginContainer>
   );
@@ -107,4 +114,9 @@ const ButtonBox = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
+`;
+
+const KakaoButton = styled.div`
+  display: flex;
+  justify-content: center;
 `;

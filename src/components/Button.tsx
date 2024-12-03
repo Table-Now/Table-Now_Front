@@ -35,8 +35,7 @@ export default Button;
 
 const StyledButton = styled.button<{ disabled?: boolean }>`
   padding: 0.5rem 1rem;
-  background-color: ${(props) =>
-    props.disabled ? "#d1d5db" : "#ff5733"}; /* Coral red */
+  background-color: ${(props) => (props.disabled ? "#d1d5db" : "#ff5733")};
   color: white;
   border: none;
   border-radius: 4px;

@@ -16,6 +16,7 @@ import StoreDetail from "../pages/store/StoreDetail";
 import StoreUpdate from "../pages/store/StoreUpdate";
 import MyStoreList from "../pages/store/MyStoreList";
 import MyReservationList from "../pages/reservation/MyReservationList";
+import KakaoLogin from "../pages/user/KakaoLogin";
 
 interface ProtectedRouteProps {
   element: JSX.Element;
@@ -61,6 +62,7 @@ const AppContent: React.FC = () => {
           path="/store/manager/list/:user"
           element={<ProtectedRoute element={<MyStoreList />} />}
         />
+        <Route path="/login/oauth2/code" element={<KakaoLogin />} />
         <Route
           path="/my/reservation/list/:user"
           element={<ProtectedRoute element={<MyReservationList />} />}

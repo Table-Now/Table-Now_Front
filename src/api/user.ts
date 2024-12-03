@@ -30,6 +30,13 @@ export const userApi = {
     return response.data;
   },
 
+  kakaoLogin: async (data: { authorizationCode: string }) => {
+    const response = await axios.get("/kakao/login", {
+      params: data,
+    });
+    return response.data;
+  },
+
   resetPassword: async (data: RePassword): Promise<string> => {
     const response = await axios.post(`${API_BASE_URL}user/repassword`, data, {
       headers: getAuthHeader(),

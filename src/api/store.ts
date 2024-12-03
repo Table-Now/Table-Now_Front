@@ -44,6 +44,8 @@ export const storeApi = {
     const response = await instance.get(`${API_BASE_URL}store/detail`, {
       params: { id },
     });
+
+    console.log(response);
     return response.data;
   },
 
