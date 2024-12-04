@@ -3,7 +3,7 @@ import { RegisterFormData, RegisterResponse } from "../types/users/join";
 import { LoginFormData, LoginResponse } from "../types/users/login";
 import { RePassword } from "../types/users/passwordReset";
 import { Delete } from "../types/users/delete";
-import { MyInfoResponse } from "../types/users/myInfo";
+import { MyInfoResponse, MyInfoUpdate } from "../types/users/myInfo";
 import { EmailAuthResponse } from "../types/users/emailAuth";
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -44,6 +44,14 @@ export const userApi = {
     return response.data;
   },
 
+  updateUser: async (data: MyInfoUpdate): Promise<string> => {
+    const response = await axios.patch(`${API_BASE_URL}user/infoupdate`, data, {
+      headers: getAuthHeader(),
+    });
+
+    return response.data;
+  },
+
   deleteUser: async (user: string | null): Promise<Delete> => {
     const response = await axios.delete(`${API_BASE_URL}user/delete`, {
       params: { user },
@@ -52,7 +60,7 @@ export const userApi = {
     return response.data;
   },
 
-  getMyInfo: async (user: string): Promise<MyInfoResponse> => {
+  getMyInfo: async (user: string | null): Promise<MyInfoResponse> => {
     const response = await axios.get<MyInfoResponse>(
       `${API_BASE_URL}user/myinfo`,
       {

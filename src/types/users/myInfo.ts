@@ -5,3 +5,9 @@ export interface MyInfoResponse {
   phone: string;
   createAt: string;
 }
+
+export interface MyInfoUpdate {
+  password: string;
+  email: string;
+  phone: string;
+}

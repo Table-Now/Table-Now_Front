@@ -4,7 +4,8 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { userApi } from "../../api/user";
 import { MyInfoResponse } from "../../types/users/myInfo";
-import { RePassword } from "../../types/users/passwordReset";
+// import { RePassword } from "../../types/users/passwordReset";
+import { MyInfoUpdate } from "../../types/users/myInfo";
 import Button from "../../components/Button";
 import { useUser } from "../../hooks/useUser";
 
@@ -15,10 +16,10 @@ const Mypage: React.FC = () => {
   const [userInfo, setUserInfo] = useState<MyInfoResponse | null>(null);
   const [showResetModal, setShowResetModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [resetPasswordData, setResetPasswordData] = useState<RePassword>({
-    user: "",
+  const [resetPasswordData, setResetPasswordData] = useState<MyInfoUpdate>({
+    password: "",
     email: "",
-    rePassword: "",
+    phone: "",
   });
 
   useEffect(() => {
@@ -37,17 +38,29 @@ const Mypage: React.FC = () => {
     fetchUserInfo();
   }, [user]);
 
-  const handleResetPassword = async () => {
+  // const handleResetPassword = async () => {
+  //   try {
+  //     const response = await userApi.resetPassword(resetPasswordData);
+  //     if (response === "Success") {
+  //       alert("비밀번호가 성공적으로 재설정되었습니다.");
+  //       setShowResetModal(false);
+  //       sessionStorage.clear();
+  //       navigate("/login");
+  //     }
+  //   } catch (error) {
+  //     alert("비밀번호 재설정에 실패했습니다.");
+  //     console.error(error);
+  //   }
+  // };
+
+  const handleUpdateInfo = async () => {
     try {
-      const response = await userApi.resetPassword(resetPasswordData);
-      if (response === "Success") {
-        alert("비밀번호가 성공적으로 재설정되었습니다.");
-        setShowResetModal(false);
-        sessionStorage.clear();
-        navigate("/login");
-      }
+      const response = await userApi.updateUser(resetPasswordData);
+      alert("정보가 성공적으로 수정되었습니다. 다시 로그인을 진행해 주세요");
+      setShowResetModal(false);
+      navigate("/login");
     } catch (error) {
-      alert("비밀번호 재설정에 실패했습니다.");
+      alert("정보 수정에 실패했습니다. 다시 한번 확인해 주세요");
       console.error(error);
     }
   };
@@ -117,7 +130,7 @@ const Mypage: React.FC = () => {
         <Button type="button" onClick={logoutHandler}>
           로그아웃
         </Button>
-        <Button onClick={() => setShowResetModal(true)}>비밀번호 재설정</Button>
+        <Button onClick={() => setShowResetModal(true)}>내 정보 수정</Button>
         <Button onClick={() => setShowDeleteModal(true)}>회원 탈퇴</Button>
       </ButtonBox>
 
@@ -125,15 +138,15 @@ const Mypage: React.FC = () => {
         <>
           <Backdrop onClick={() => setShowResetModal(false)} />
           <Modal>
-            <h2>비밀번호 재설정</h2>
+            <h2>내 정보 수정</h2>
             <Input
-              type="text"
-              placeholder="사용자 ID"
-              value={resetPasswordData.user}
+              type="password"
+              placeholder="새 비밀번호"
+              value={resetPasswordData.password}
               onChange={(e) =>
                 setResetPasswordData({
                   ...resetPasswordData,
-                  user: e.target.value,
+                  password: e.target.value,
                 })
               }
             />
@@ -149,18 +162,18 @@ const Mypage: React.FC = () => {
               }
             />
             <Input
-              type="password"
-              placeholder="새 비밀번호"
-              value={resetPasswordData.rePassword}
+              type="tel"
+              placeholder="전화번호"
+              value={resetPasswordData.phone}
               onChange={(e) =>
                 setResetPasswordData({
                   ...resetPasswordData,
-                  rePassword: e.target.value,
+                  phone: e.target.value,
                 })
               }
             />
             <ButtonBox1>
-              <Button onClick={handleResetPassword}>확인</Button>
+              <Button onClick={handleUpdateInfo}>확인</Button>
               <Button onClick={() => setShowResetModal(false)}>취소</Button>
             </ButtonBox1>
           </Modal>
