@@ -8,26 +8,37 @@ const getAuthHeader = () => {
 };
 
 export const wishlistApi = {
-  toggleLike: async (storeId: number): Promise<boolean> => {
+  toggleLike: async (
+    user: string | null,
+    store: string | undefined
+  ): Promise<boolean> => {
     try {
-      const response = await axios.post(`${API_BASE_URL}wishlist/like`, null, {
-        params: { id: storeId },
-        headers: getAuthHeader(),
-      });
-      return response.data;
+      const response = await axios.post(
+        `${API_BASE_URL}wishlist/toggle`, // 엔드포인트
+        { user, store }, // 요청 바디에 user와 store 객체를 보냄
+        {
+          headers: getAuthHeader(),
+        }
+      );
+      return response.data; // 서버에서 반환한 데이터 (성공/실패 여부)
     } catch (error) {
-      throw error;
+      console.error("Error toggling like:", error); // 오류 로그 출력
+      throw error; // 오류 다시 던짐
     }
   },
 
-  isLiked: async (storeId: number): Promise<boolean> => {
+  checkLike: async (
+    user: string | null,
+    store: string | undefined
+  ): Promise<boolean> => {
     try {
-      const response = await axios.get(`${API_BASE_URL}wishlist/isLiked`, {
-        params: { id: storeId },
+      const response = await axios.get(`${API_BASE_URL}wishlist/check`, {
+        params: { user, store },
         headers: getAuthHeader(),
       });
       return response.data;
     } catch (error) {
+      console.error("Error checking like status:", error);
       throw error;
     }
   },

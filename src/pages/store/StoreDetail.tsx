@@ -36,6 +36,17 @@ const StoreDetail: React.FC = () => {
     }
   }, [id, navigate]);
 
+  const checkLikeStatus = useCallback(async () => {
+    if (user && storeDetail?.store) {
+      try {
+        const likeStatus = await wishlistApi.checkLike(user, storeDetail.store);
+        setIsLiked(likeStatus);
+      } catch (err: any) {
+        console.error("Failed to check like status:", err);
+      }
+    }
+  }, [user, storeDetail?.store]);
+
   const checkReservation = useCallback(async () => {
     if (user && id) {
       try {
@@ -61,22 +72,12 @@ const StoreDetail: React.FC = () => {
     }
   }, [storeDetail?.store]);
 
-  // 좋아요 상태 조회
-  const fetchLikeStatus = useCallback(async () => {
-    try {
-      const result = await wishlistApi.isLiked(Number(id));
-      setIsLiked(result);
-    } catch (err: any) {
-      console.error("Failed to fetch like status:", err);
-    }
-  }, [id]);
-
   useEffect(() => {
     getStoreDetail();
     checkReservation();
     fetchReviews();
-    fetchLikeStatus(); // 페이지 로드 시 좋아요 상태 조회
-  }, [getStoreDetail, checkReservation, fetchReviews, fetchLikeStatus]);
+    checkLikeStatus();
+  }, [getStoreDetail, checkReservation, fetchReviews, checkLikeStatus]);
 
   if (!storeDetail) {
     return <LoadingMessage>Loading store details...</LoadingMessage>;
@@ -129,13 +130,12 @@ const StoreDetail: React.FC = () => {
 
   const handleLikeToggle = async () => {
     try {
-      const result = await wishlistApi.toggleLike(Number(id));
-      setIsLiked(result); // 좋아요 상태 업데이트
+      await wishlistApi.toggleLike(user, storeDetail.store);
+      setIsLiked((prevState) => !prevState); // 현재 상태의 반대로 설정
     } catch (err: any) {
       alert(err.response?.data);
     }
   };
-
   return (
     <>
       <DetailContainer>
