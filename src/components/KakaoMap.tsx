@@ -67,33 +67,26 @@ const KakaoMap: React.FC<KakaoMapProps> = ({
 
         // 6. 오버레이 커스텀 스타일
         const content = `
-            <div style="
-                display: flex; 
-                align-items: center; 
-                justify-content: center; 
-                padding: 10px; 
-                background-color: #4CAF50; 
-                color: white; 
-                border-radius: 8px; 
-                font-weight: bold; 
-                border: 2px solid #006400;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            ">
-                <span>${storeName}</span>
-            </div>`;
+        <div style="
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 10px; 
+            background-color: #4CAF50; 
+            color: white; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            border: 2px solid #006400;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            pointer-events: none; // 추가: 마우스 이벤트 비활성화
+        ">
+            ${storeName}
+        </div>`;
 
         const customOverlay = new window.kakao.maps.CustomOverlay({
           position: markerPosition,
           content: content,
           yAnchor: 1.5,
-        });
-
-        // 7. 지도 클릭 이벤트 추가
-        window.kakao.maps.event.addListener(map, "click", (mouseEvent: any) => {
-          const clickPosition = mouseEvent.latLng;
-          alert(
-            `클릭한 위치의 좌표: ${clickPosition.getLat()}, ${clickPosition.getLng()}`
-          );
         });
 
         // 마커와 오버레이 맵에 추가

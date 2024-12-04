@@ -8,8 +8,8 @@ interface ReservationModalProps {
   onClose: () => void;
   storeName: string;
   user: string;
-  storeOpen: string; // 예: "10:00"
-  storeClose: string; // 예: "22:00"
+  storeOpen: string;
+  storeClose: string;
   storeWeekOff: string;
 }
 
@@ -26,6 +26,13 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
   const [reservationTime, setReservationTime] = useState<string>("");
   const [peopleNb, setPeopleNb] = useState(1);
   const [timeOptions, setTimeOptions] = useState<string[]>([]);
+
+  // 오늘 날짜를 YYYY-MM-DD 형식으로 가져오는 함수
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
+  };
+  const todayDate = getTodayDate();
 
   // 시간을 10분 단위로 생성하고, 오픈 시간과 클로즈 시간 사이만 보여주기
   useEffect(() => {
@@ -53,11 +60,15 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // 오늘 날짜와 선택한 시간을 결합
+    const reservationDateTime = `${todayDate}T${reservationTime}:00`;
+
     const reservationData: ReservationRequest = {
       userId: user,
       phone,
       store: storeName,
-      reservationTime: reservationTime,
+      reservationDateTime,
       peopleNb,
     };
 
@@ -86,12 +97,14 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               required
+              placeholder="'-'없이 입력해주세요"
             />
           </InputGroup>
           <h4>
             오픈시간 : {storeOpen} ~ {storeClose}
           </h4>
           <h4>휴무일 : {storeWeekOff}</h4>
+
           <InputGroup>
             <label htmlFor="reservationTime">예약 시간:</label>
             <select
@@ -108,6 +121,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
               ))}
             </select>
           </InputGroup>
+
           <InputGroup>
             <label htmlFor="peopleNb">인원 수:</label>
             <input
@@ -119,6 +133,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
               required
             />
           </InputGroup>
+
           <ButtonGroup>
             <Button type="submit">예약하기</Button>
             <Button type="button" onClick={onClose}>
@@ -143,6 +158,7 @@ const ModalOverlay = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1000; // 추가: 모달을 가장 위로 올리기
 `;
 
 const ModalContent = styled.div`
@@ -150,6 +166,8 @@ const ModalContent = styled.div`
   padding: 20px;
   border-radius: 8px;
   width: 300px;
+  position: relative; // 추가
+  z-index: 1001;
 `;
 
 const InputGroup = styled.div`

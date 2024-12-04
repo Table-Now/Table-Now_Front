@@ -25,6 +25,7 @@ export interface StoreListParams {
 }
 
 export interface ManagerStoreList {
+  id: number;
   store: string;
   storeLocation: string;
   storeImg: string;

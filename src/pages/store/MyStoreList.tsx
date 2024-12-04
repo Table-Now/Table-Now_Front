@@ -25,8 +25,8 @@ const MyStoreList: React.FC = () => {
     fetchStores();
   }, [user]);
 
-  const handleCardClick = (user: string) => {
-    navigate(`/store/${user}`);
+  const handleCardClick = (id: number) => {
+    navigate(`/store/${id}`);
   };
 
   return (
@@ -34,10 +34,7 @@ const MyStoreList: React.FC = () => {
       <Title>내 상점 목록</Title>
       <StoreGrid>
         {stores.map((store) => (
-          <StoreCard
-            key={store.store}
-            onClick={() => handleCardClick(store.store)}
-          >
+          <StoreCard key={store.id} onClick={() => handleCardClick(store.id)}>
             <StoreImage
               src={store.storeImg || "/img/noimage.jpg"}
               alt={store.store}

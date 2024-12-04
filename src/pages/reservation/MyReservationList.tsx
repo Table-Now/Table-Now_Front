@@ -13,6 +13,7 @@ const MyReservationList: React.FC = () => {
   );
   const [loading, setLoading] = useState(true);
 
+  console.log(reservations);
   useEffect(() => {
     const fetchReservations = async () => {
       try {
@@ -53,7 +54,14 @@ const MyReservationList: React.FC = () => {
   };
 
   const formatDate = (dateString: string) => {
-    return dateString.slice(0, 5);
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = String(date.getFullYear()).slice(2);
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
   };
 
   return (
@@ -79,7 +87,7 @@ const MyReservationList: React.FC = () => {
               <ReservationInfo>
                 <InfoItem>
                   <Label>예약 시간</Label>
-                  <Value>{formatDate(reservation.reservationTime)}</Value>
+                  <Value>{formatDate(reservation.reservationDateTime)}</Value>
                 </InfoItem>
                 <InfoItem>
                   <Label>인원</Label>

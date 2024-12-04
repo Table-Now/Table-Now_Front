@@ -1,10 +1,8 @@
-// pages/Mypage.tsx
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { userApi } from "../../api/user";
 import { MyInfoResponse } from "../../types/users/myInfo";
-// import { RePassword } from "../../types/users/passwordReset";
 import { MyInfoUpdate } from "../../types/users/myInfo";
 import Button from "../../components/Button";
 import { useUser } from "../../hooks/useUser";
@@ -37,21 +35,6 @@ const Mypage: React.FC = () => {
 
     fetchUserInfo();
   }, [user]);
-
-  // const handleResetPassword = async () => {
-  //   try {
-  //     const response = await userApi.resetPassword(resetPasswordData);
-  //     if (response === "Success") {
-  //       alert("비밀번호가 성공적으로 재설정되었습니다.");
-  //       setShowResetModal(false);
-  //       sessionStorage.clear();
-  //       navigate("/login");
-  //     }
-  //   } catch (error) {
-  //     alert("비밀번호 재설정에 실패했습니다.");
-  //     console.error(error);
-  //   }
-  // };
 
   const handleUpdateInfo = async () => {
     try {
@@ -126,7 +109,16 @@ const Mypage: React.FC = () => {
             </Button>
           </>
         )}
-
+        {role === "MANAGER" && (
+          <>
+            <Button
+              type="button"
+              onClick={() => navigate(`/store/manager/list/${user}`)}
+            >
+              매장 목록
+            </Button>
+          </>
+        )}
         <Button type="button" onClick={logoutHandler}>
           로그아웃
         </Button>
