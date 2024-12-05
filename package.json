@@ -44,7 +44,5 @@
       "last 1 safari version"
     ]
   },
-    "proxy": "http://api.tablenow.org"
-  
-  
+  "proxy": "https://www.tablenow.org"
 }
