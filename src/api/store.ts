@@ -4,7 +4,7 @@ import { instance } from "./instance";
 import axios from "axios";
 
 const API_BASE_URL =
-  process.env.REACT_APP_API_BASE_URL || "https://backend.tablenow.org/";
+  process.env.REACT_APP_API_BASE_URL || "https://tablenow.org/";
 
 const getAuthHeader = () => {
   const token = sessionStorage.getItem("token");
@@ -25,6 +25,9 @@ export const storeApi = {
       `https://tablenow.org/store/list`,
       {
         params: apiParams,
+        headers: {
+          "Cache-Control": "no-cache",
+        },
       }
     );
     return response.data;
