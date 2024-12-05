@@ -1,10 +1,6 @@
 import { Store, StoreListParams } from "../types/stores/list";
 import { StoreDetailType } from "../types/stores/detail";
 import { instance } from "./instance";
-import axios from "axios";
-
-const API_BASE_URL =
-  process.env.REACT_APP_API_BASE_URL || "https://tablenow.org/";
 
 const getAuthHeader = () => {
   const token = sessionStorage.getItem("token");
@@ -21,34 +17,27 @@ export const storeApi = {
       ...(params.userLon && { userLon: params.userLon }),
     };
 
-    const response = await axios.get<Store[]>(
-      `https://tablenow.org/store/list`,
-      {
-        params: apiParams,
-        headers: {
-          "Cache-Control": "no-cache",
-        },
-      }
-    );
+    const response = await instance.get<Store[]>(`store/list`, {
+      params: apiParams,
+      headers: {
+        "Cache-Control": "no-cache",
+      },
+    });
     return response.data;
   },
 
   registerStore: async (formData: FormData) => {
-    const response = await instance.post(
-      `${API_BASE_URL}store/register`,
-      formData,
-      {
-        headers: {
-          ...getAuthHeader(),
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const response = await instance.post(`store/register`, formData, {
+      headers: {
+        ...getAuthHeader(),
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   },
 
   getStoreDetail: async (id: number) => {
-    const response = await instance.get(`${API_BASE_URL}store/detail`, {
+    const response = await instance.get(`store/detail`, {
       params: { id },
     });
 
@@ -57,19 +46,15 @@ export const storeApi = {
   },
 
   updateStore: async (id: number, storeData: StoreDetailType) => {
-    const response = await instance.put(
-      `${API_BASE_URL}store/update`,
-      storeData,
-      {
-        params: { id },
-        headers: getAuthHeader(),
-      }
-    );
+    const response = await instance.put(`store/update`, storeData, {
+      params: { id },
+      headers: getAuthHeader(),
+    });
     return response.data;
   },
 
   deleteStore: async (id: number) => {
-    const response = await instance.delete(`${API_BASE_URL}store/delete`, {
+    const response = await instance.delete(`store/delete`, {
       params: { id },
       headers: getAuthHeader(),
     });
@@ -79,7 +64,7 @@ export const storeApi = {
 
 export const managerStoreApi = {
   storeList: async (user: string) => {
-    const response = await instance.get(`${API_BASE_URL}manager/list`, {
+    const response = await instance.get(`manager/list`, {
       params: { user },
       headers: getAuthHeader(),
     });

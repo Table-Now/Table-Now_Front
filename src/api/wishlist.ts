@@ -1,6 +1,4 @@
-import axios from "axios";
-
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+import { instance } from "./instance";
 
 const getAuthHeader = () => {
   const token = sessionStorage.getItem("token");
@@ -13,8 +11,8 @@ export const wishlistApi = {
     store: string | undefined
   ): Promise<boolean> => {
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}wishlist/toggle`, // 엔드포인트
+      const response = await instance.post(
+        `wishlist/toggle`, // 엔드포인트
         { user, store }, // 요청 바디에 user와 store 객체를 보냄
         {
           headers: getAuthHeader(),
@@ -32,7 +30,7 @@ export const wishlistApi = {
     store: string | undefined
   ): Promise<boolean> => {
     try {
-      const response = await axios.get(`${API_BASE_URL}wishlist/check`, {
+      const response = await instance.get(`wishlist/check`, {
         params: { user, store },
         headers: getAuthHeader(),
       });
