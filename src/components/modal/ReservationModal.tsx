@@ -105,7 +105,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
           </h4>
           <h4>휴무일 : {storeWeekOff}</h4>
 
-          <InputGroup>
+          {/* <InputGroup>
             <label htmlFor="reservationTime">예약 시간:</label>
             <select
               id="reservationTime"
@@ -120,7 +120,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
                 </option>
               ))}
             </select>
-          </InputGroup>
+          </InputGroup> */}
 
           <InputGroup>
             <label htmlFor="peopleNb">인원 수:</label>
