@@ -41,7 +41,6 @@ export const storeApi = {
       params: { id },
     });
 
-    console.log(response);
     return response.data;
   },
 

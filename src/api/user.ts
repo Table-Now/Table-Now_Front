@@ -70,7 +70,6 @@ export const userApi = {
       params: { user, key },
     });
 
-    console.log("api" + response);
     return response.data;
   },
 };

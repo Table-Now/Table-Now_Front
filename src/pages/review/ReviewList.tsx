@@ -27,11 +27,21 @@ const ReviewList: React.FC<ReviewListProps> = ({
         <NoReviews>아직 리뷰가 없습니다.</NoReviews>
       ) : (
         reviews.map((review) => (
-          <ReviewItem key={review.id}>
+          <ReviewItem
+            key={review.id}
+            $secretReview={review.secretReview}
+            data-secret-review={review.secretReview}
+          >
             <ReviewHeader>
               <Username>{review.user}</Username>
             </ReviewHeader>
-            <ReviewContent>{review.contents}</ReviewContent>
+            <ReviewContent>
+              {review.secretReview && review.password ? (
+                <SecretMessage>비밀글입니다</SecretMessage>
+              ) : (
+                review.contents
+              )}
+            </ReviewContent>
             {sessionStorage.getItem("token") && user === review.user && (
               <ButtonContainer>
                 <StyledButton onClick={() => handleDelete(review)}>
@@ -58,14 +68,16 @@ const NoReviews = styled.p`
   font-style: italic;
 `;
 
-const ReviewItem = styled.div`
-  background-color: #f9f9f9;
+const ReviewItem = styled.div<{ $secretReview: boolean }>`
+  background-color: ${(props) => (props.$secretReview ? "#fff" : "#f9f9f9")};
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 15px;
   margin-bottom: 15px;
   position: relative;
   padding-bottom: 50px;
+  box-shadow: ${(props) =>
+    props.$secretReview ? "0px 0px 10px rgba(0, 0, 0, 0.1)" : "none"};
 `;
 
 const ReviewHeader = styled.div`
@@ -80,6 +92,17 @@ const Username = styled.span`
 
 const ReviewContent = styled.p`
   margin-bottom: 10px;
+`;
+
+const SecretMessage = styled.span`
+  display: inline-block;
+  padding: 10px;
+  background-color: #f1f1f1;
+  color: #333;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 5px;
 `;
 
 const ButtonContainer = styled.div`

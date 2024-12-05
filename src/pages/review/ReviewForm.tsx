@@ -12,6 +12,8 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
   const { role, user } = useUser();
   const [contents, setContents] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [secretReview, setSecretReview] = useState<boolean>(false); // secretReview 상태 추가
+  const [password, setPassword] = useState<string>(""); // 비밀번호 상태 추가
 
   const handleReviewSubmit = async () => {
     try {
@@ -20,13 +22,21 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
         store: store,
         contents: contents,
         role: role,
+        secretReview: secretReview, // secretReview 값 전송
+        password: secretReview ? password : undefined, // secretReview가 true일 때만 비밀번호 포함
       };
       const newReview = await reviewApi.registerReview(formData);
       setContents("");
+      setPassword(""); // 리뷰 등록 후 비밀번호 초기화
+      setSecretReview(false); // secretReview 초기화
       onReviewSubmitted(newReview); // 새로운 리뷰를 부모 컴포넌트에 전달
     } catch (err: any) {
-      setError(err.response?.data);
+      alert(err.response?.data?.message);
     }
+  };
+
+  const handleSecretReviewChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSecretReview(e.target.checked);
   };
 
   return (
@@ -37,6 +47,32 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
         onChange={(e) => setContents(e.target.value)}
         placeholder="리뷰 내용을 입력하세요."
       />
+
+      {/* 비밀리뷰 체크박스 */}
+      <Label>
+        <input
+          type="checkbox"
+          checked={secretReview}
+          onChange={handleSecretReviewChange}
+        />
+        비밀 리뷰로 작성
+      </Label>
+
+      {/* 비밀리뷰일 경우 비밀번호 입력란 */}
+      {secretReview && (
+        <PasswordInput
+          type="text" // 숫자만 허용하지만 type="password" 대신 text를 사용하여 필터링 구현
+          value={password}
+          onChange={(e) => {
+            const input = e.target.value;
+            if (/^\d*$/.test(input) && input.length <= 4) {
+              setPassword(input);
+            }
+          }}
+          placeholder="숫자 4자리를 입력하세요"
+        />
+      )}
+
       <Button onClick={handleReviewSubmit}>등록하기</Button>
       {error && <ErrorMessage>{error}</ErrorMessage>}
     </FormContainer>
@@ -86,6 +122,24 @@ const Textarea = styled.textarea`
   &::placeholder {
     color: #b0b0b0;
   }
+`;
+
+const Label = styled.label`
+  display: inline-flex;
+  align-items: center;
+  font-size: 14px;
+  margin-bottom: 16px;
+`;
+
+const PasswordInput = styled.input`
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #d1d1d1;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  background-color: #fff;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 `;
 
 const ErrorMessage = styled.p`

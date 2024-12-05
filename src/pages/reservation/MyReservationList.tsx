@@ -13,7 +13,6 @@ const MyReservationList: React.FC = () => {
   );
   const [loading, setLoading] = useState(true);
 
-  console.log(reservations);
   useEffect(() => {
     const fetchReservations = async () => {
       try {

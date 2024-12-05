@@ -3,6 +3,8 @@ export interface ReviewRegister {
   store: string;
   contents: string;
   role: string | null;
+  secretReview: boolean;
+  password?: string;
 }
 
 export interface ReviewListTypes {
@@ -12,6 +14,8 @@ export interface ReviewListTypes {
   user: string;
   store?: string;
   role?: string;
+  secretReview: boolean;
+  password?: string;
 }
 
 export interface ReviewListProps {
