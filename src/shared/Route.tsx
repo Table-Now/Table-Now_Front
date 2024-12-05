@@ -74,7 +74,7 @@ const AppContent: React.FC = () => {
 
 const AppRouter: React.FC = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.PUBLIC_URL || "/"}>
       <AppContent />
     </BrowserRouter>
   );
