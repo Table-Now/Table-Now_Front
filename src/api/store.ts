@@ -22,7 +22,7 @@ export const storeApi = {
     };
 
     const response = await axios.get<Store[]>(
-      `https://www.tablenow.org/store/list`,
+      `https://tablenow.org/store/list`,
       {
         params: apiParams,
       }
