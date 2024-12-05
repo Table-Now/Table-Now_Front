@@ -78,17 +78,17 @@ const MyReservationList: React.FC = () => {
             >
               <ReservationHeader>
                 <StoreName>{reservation.store}</StoreName>
-                <StatusBadge $status={reservation.reservationStatus}>
+                {/* <StatusBadge $status={reservation.reservationStatus}>
                   {reservation.reservationStatus === "REQ" && "예약 대기"}
                   {reservation.reservationStatus === "ING" && "예약 확정"}
                   {reservation.reservationStatus === "STOP" && "예약 확정"}
-                </StatusBadge>
+                </StatusBadge> */}
               </ReservationHeader>
               <ReservationInfo>
-                <InfoItem>
+                {/* <InfoItem>
                   <Label>예약 시간</Label>
                   <Value>{formatDate(reservation.reservationDateTime)}</Value>
-                </InfoItem>
+                </InfoItem> */}
                 <InfoItem>
                   <Label>인원</Label>
                   <Value>{reservation.peopleNb}명</Value>

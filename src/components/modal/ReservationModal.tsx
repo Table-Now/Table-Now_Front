@@ -62,13 +62,13 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
     e.preventDefault();
 
     // 오늘 날짜와 선택한 시간을 결합
-    const reservationDateTime = `${todayDate}T${reservationTime}:00`;
+    // const reservationDateTime = `${todayDate}T${reservationTime}:00`;
 
     const reservationData: ReservationRequest = {
       userId: user,
       phone,
       store: storeName,
-      reservationDateTime,
+      // reservationDateTime,
       peopleNb,
     };
 
