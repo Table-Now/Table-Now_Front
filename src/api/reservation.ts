@@ -38,4 +38,23 @@ export const reservationApi = {
     );
     return response.data;
   },
+
+  myReservationCancel: async (id: number | undefined) => {
+    await instance.delete(`reservation/delete?id=${id}`, {
+      headers: getAuthHeader(),
+    });
+  },
+
+  myReservationApproval: async (phone: string | undefined) => {
+    try {
+      const response = await instance.post(
+        `reservation/approval?phone=${phone}`,
+        null, // POST 요청에서 body를 전달하지 않는 경우 `null`을 사용할 수 있습니다
+        { headers: getAuthHeader() } // headers는 세 번째 인자로 전달
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
 };

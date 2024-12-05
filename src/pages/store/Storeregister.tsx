@@ -78,7 +78,7 @@ const StoreRegister: React.FC = () => {
       await storeApi.registerStore(formDataToSend);
       navigate("/");
     } catch (error: any) {
-      setError(error.response?.data);
+      setError(error.response?.data?.message);
     } finally {
       setLoading(false);
     }

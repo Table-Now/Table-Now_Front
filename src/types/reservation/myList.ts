@@ -3,4 +3,5 @@ export interface myReservationListTypes {
   phone: string;
   store: string;
   peopleNb: number;
+  storeId?: number;
 }

@@ -78,7 +78,8 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
       onClose();
       window.location.reload();
     } catch (err: any) {
-      alert(err.response?.data);
+      alert(err.response?.data?.message);
+      window.location.reload();
     }
   };
 
@@ -104,23 +105,6 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
             오픈시간 : {storeOpen} ~ {storeClose}
           </h4>
           <h4>휴무일 : {storeWeekOff}</h4>
-
-          {/* <InputGroup>
-            <label htmlFor="reservationTime">예약 시간:</label>
-            <select
-              id="reservationTime"
-              value={reservationTime}
-              onChange={(e) => setReservationTime(e.target.value)}
-              required
-            >
-              <option value="">시간 선택</option>
-              {timeOptions.map((time) => (
-                <option key={time} value={time}>
-                  {time}
-                </option>
-              ))}
-            </select>
-          </InputGroup> */}
 
           <InputGroup>
             <label htmlFor="peopleNb">인원 수:</label>

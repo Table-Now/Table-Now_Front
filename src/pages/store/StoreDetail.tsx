@@ -13,6 +13,7 @@ import { reviewApi } from "../../api/review";
 import { ReviewListTypes } from "../../types/review/Review";
 import { wishlistApi } from "../../api/wishlist";
 import KakaoMap from "../../components/KakaoMap";
+import { userApi } from "../../api/user";
 
 const StoreDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -127,13 +128,34 @@ const StoreDetail: React.FC = () => {
       prevReviews.filter((review) => review.id !== deletedReviewId)
     );
   };
-
   const handleLikeToggle = async () => {
     try {
       await wishlistApi.toggleLike(user, storeDetail.store);
-      setIsLiked((prevState) => !prevState); // 현재 상태의 반대로 설정
+      setIsLiked((prevState) => !prevState);
     } catch (err: any) {
       alert(err.response?.data);
+    }
+  };
+
+  const handleReservationCancel = async () => {
+    try {
+      await reservationApi.myReservationCancel(storeDetail?.id);
+      alert("예약이 취소되었습니다.");
+      window.location.reload();
+    } catch (err: any) {
+      alert(err.response?.data?.message);
+    }
+  };
+
+  const handleReservationApproval = async () => {
+    const phone = await userApi.getMyInfo(user);
+    try {
+      const response = await reservationApi.myReservationApproval(phone.phone);
+      if (response && response.message) {
+        alert(response.message); // 메시지를 alert로 표시
+      }
+    } catch (err: any) {
+      alert(err.response?.data?.message);
     }
   };
   return (
@@ -148,9 +170,14 @@ const StoreDetail: React.FC = () => {
         {sessionStorage.getItem("token") &&
           (role === "USER" || role == null) && (
             <ButtonBox>
-              <Button onClick={handleReservationAction}>
-                {isReserved ? "대기중" : "원격줄서기"}
-              </Button>
+              <ReservationBtn>
+                <Button onClick={handleReservationAction}>
+                  {isReserved ? "대기중" : "원격줄서기"}
+                </Button>
+                <Button onClick={handleReservationApproval}>확정하기</Button>
+              </ReservationBtn>
+
+              <Button onClick={handleReservationCancel}>예약 취소</Button>
             </ButtonBox>
           )}
 
@@ -322,4 +349,9 @@ const LikeIcon = styled.img`
   width: 100px;
   height: 100px;
   transition: filter 0.2s ease;
+`;
+
+const ReservationBtn = styled.div`
+  display: flex;
+  gap: 10px;
 `;

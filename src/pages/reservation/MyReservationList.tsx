@@ -13,6 +13,8 @@ const MyReservationList: React.FC = () => {
   );
   const [loading, setLoading] = useState(true);
 
+  console.log(reservations);
+
   useEffect(() => {
     const fetchReservations = async () => {
       try {
@@ -48,7 +50,7 @@ const MyReservationList: React.FC = () => {
     );
   }
 
-  const handleCardClick = (id: number) => {
+  const handleCardClick = (id: number | undefined) => {
     navigate(`/store/${id}`);
   };
 
@@ -73,7 +75,7 @@ const MyReservationList: React.FC = () => {
           {reservations.map((reservation) => (
             <ReservationCard
               key={reservation.id}
-              onClick={() => handleCardClick(reservation.id)}
+              onClick={() => handleCardClick(reservation.storeId)}
             >
               <ReservationHeader>
                 <StoreName>{reservation.store}</StoreName>
