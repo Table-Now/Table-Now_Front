@@ -1,4 +1,4 @@
-import { ReviewRegister } from "../types/review/Review";
+import { ReviewPassword, ReviewRegister } from "../types/review/Review";
 import { instance } from "./instance";
 
 const getAuthHeader = () => {
@@ -26,6 +26,13 @@ export const reviewApi = {
       `review/delete?user=${user}&id=${id}`,
       { headers: getAuthHeader() }
     );
+    return response.data;
+  },
+
+  securityReviewCheck: async (data: ReviewPassword) => {
+    const response = await instance.post(`review/passwordrequest`, data, {
+      headers: getAuthHeader(),
+    });
     return response.data;
   },
 

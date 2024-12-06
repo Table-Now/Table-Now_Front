@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { ReviewListProps, ReviewListTypes } from "../../types/review/Review";
 import Button from "../../components/Button";
@@ -10,6 +10,11 @@ const ReviewList: React.FC<ReviewListProps> = ({
   onReviewDeleted,
 }) => {
   const { user } = useUser();
+  const [passwordInput, setPasswordInput] = useState<string | null>(null);
+  const [isPasswordValid, setIsPasswordValid] = useState<boolean | null>(null);
+  const [targetReview, setTargetReview] = useState<ReviewListTypes | null>(
+    null
+  );
 
   const handleDelete = async (review: ReviewListTypes) => {
     try {
@@ -18,6 +23,32 @@ const ReviewList: React.FC<ReviewListProps> = ({
       alert("리뷰가 삭제되었습니다.");
     } catch (err: any) {
       alert(err.response?.data);
+    }
+  };
+
+  const handlePasswordCheck = async (
+    review: ReviewListTypes,
+    password: string
+  ) => {
+    if (user !== review.user) {
+      alert("자신의 리뷰만 확인할 수 있습니다.");
+      return;
+    }
+
+    try {
+      const response = await reviewApi.securityReviewCheck({
+        id: review.id,
+        user: review.user,
+        password,
+      });
+
+      if (response) {
+        setIsPasswordValid(true);
+        alert("비밀글이 공개되었습니다.");
+      }
+    } catch (err) {
+      setIsPasswordValid(false);
+      alert("잘못된 비밀번호입니다.");
     }
   };
 
@@ -36,8 +67,27 @@ const ReviewList: React.FC<ReviewListProps> = ({
               <Username>{review.user}</Username>
             </ReviewHeader>
             <ReviewContent>
-              {review.secretReview && review.password ? (
-                <SecretMessage>비밀글입니다</SecretMessage>
+              {review.secretReview && !isPasswordValid ? (
+                <>
+                  <SecretMessage>비밀글입니다</SecretMessage>
+                  {user === review.user && (
+                    <PasswordInputWrapper>
+                      <input
+                        type="password"
+                        placeholder="비밀번호를 입력하세요"
+                        value={passwordInput || ""}
+                        onChange={(e) => setPasswordInput(e.target.value)}
+                      />
+                      <Button
+                        onClick={() =>
+                          handlePasswordCheck(review, passwordInput || "")
+                        }
+                      >
+                        확인
+                      </Button>
+                    </PasswordInputWrapper>
+                  )}
+                </>
               ) : (
                 review.contents
               )}
@@ -95,14 +145,17 @@ const ReviewContent = styled.p`
 `;
 
 const SecretMessage = styled.span`
-  display: inline-block;
   padding: 10px;
-  background-color: #f1f1f1;
-  color: #333;
-  font-size: 1.1em;
-  font-weight: bold;
-  text-align: center;
-  border-radius: 5px;
+  color: #db700b;
+  font-weight: 700;
+`;
+
+const PasswordInputWrapper = styled.div`
+  margin-top: 10px;
+  input {
+    padding: 5px;
+    margin-right: 10px;
+  }
 `;
 
 const ButtonContainer = styled.div`

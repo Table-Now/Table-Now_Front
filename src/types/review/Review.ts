@@ -27,3 +27,9 @@ export interface ReviewFormProps {
   store: string;
   onReviewSubmitted: (newReview: ReviewListTypes) => void;
 }
+
+export interface ReviewPassword {
+  id: number;
+  user: string;
+  password: string;
+}
