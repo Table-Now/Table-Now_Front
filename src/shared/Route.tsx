@@ -64,7 +64,8 @@ const AppContent: React.FC = () => {
           path="/store/manager/list/:user"
           element={<ProtectedRoute element={<MyStoreList />} />}
         />
-        <Route path="/login/oauth2/code" element={<KakaoLogin />} />
+        {/* <Route path="/login/oauth2/code" element={<KakaoLogin />} /> */}
+        <Route path="/kakao/callback" element={<KakaoLogin />} />
         <Route
           path="/my/reservation/list/:user"
           element={<ProtectedRoute element={<MyReservationList />} />}

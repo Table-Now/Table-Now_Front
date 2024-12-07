@@ -63,9 +63,14 @@ const Mypage: React.FC = () => {
     }
   };
 
-  const logoutHandler = () => {
-    sessionStorage.clear();
-    navigate("/login");
+  const logoutHandler = async () => {
+    try {
+      await userApi.kakaoLogout(sessionStorage.getItem("token"));
+      sessionStorage.clear();
+      navigate("/login");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (

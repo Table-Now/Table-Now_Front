@@ -23,7 +23,7 @@ const StoreDetail: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isReserved, setIsReserved] = useState<boolean>(false);
   const [isLiked, setIsLiked] = useState<boolean>(false);
-  console.log(storeDetail);
+
   const [reviews, setReviews] = useState<ReviewListTypes[]>([]);
 
   const getStoreDetail = useCallback(async () => {

@@ -12,6 +12,27 @@ const getAuthHeader = () => {
 };
 
 export const userApi = {
+  kakaoLogin: async (code: string) => {
+    const response = await instance.post(
+      `kakao/login?code=${code}`,
+      {},
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  },
+
+  kakaoLogout: async (accessToken: string | null) => {
+    const response = await instance.post(
+      "kakao/logout",
+      { accessToken } // 바디에 accessToken을 넣어 보냄
+    );
+    return response.data;
+  },
+
   register: async (data: RegisterFormData): Promise<RegisterResponse> => {
     const response = await instance.post<RegisterResponse>(
       `user/register`,
@@ -22,13 +43,6 @@ export const userApi = {
 
   login: async (data: LoginFormData): Promise<LoginResponse> => {
     const response = await instance.post<LoginResponse>(`user/login`, data);
-    return response.data;
-  },
-
-  kakaoLogin: async (data: { authorizationCode: string }) => {
-    const response = await instance.get("/kakao/login", {
-      params: data,
-    });
     return response.data;
   },
 
