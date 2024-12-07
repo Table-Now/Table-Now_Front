@@ -12,9 +12,6 @@ const ReviewList: React.FC<ReviewListProps> = ({
   const { user } = useUser();
   const [passwordInput, setPasswordInput] = useState<string | null>(null);
   const [isPasswordValid, setIsPasswordValid] = useState<boolean | null>(null);
-  const [targetReview, setTargetReview] = useState<ReviewListTypes | null>(
-    null
-  );
 
   const handleDelete = async (review: ReviewListTypes) => {
     try {

@@ -38,7 +38,7 @@ const Mypage: React.FC = () => {
 
   const handleUpdateInfo = async () => {
     try {
-      const response = await userApi.updateUser(resetPasswordData);
+      await userApi.updateUser(resetPasswordData);
       alert("정보가 성공적으로 수정되었습니다. 다시 로그인을 진행해 주세요");
       setShowResetModal(false);
       navigate("/login");
@@ -106,6 +106,16 @@ const Mypage: React.FC = () => {
               onClick={() => navigate(`/my/reservation/list/${user}`)}
             >
               예약 현황
+            </Button>
+          </>
+        )}
+        {role === "USER" && (
+          <>
+            <Button
+              type="button"
+              onClick={() => navigate(`/my/wishlist/${user}`)}
+            >
+              찜 목록
             </Button>
           </>
         )}

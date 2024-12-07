@@ -23,7 +23,7 @@ const StoreDetail: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isReserved, setIsReserved] = useState<boolean>(false);
   const [isLiked, setIsLiked] = useState<boolean>(false);
-
+  console.log(storeDetail);
   const [reviews, setReviews] = useState<ReviewListTypes[]>([]);
 
   const getStoreDetail = useCallback(async () => {
@@ -158,14 +158,23 @@ const StoreDetail: React.FC = () => {
       alert(err.response?.data?.message);
     }
   };
+
+  const handlerStoreName = async () => {
+    navigate(`/manager/store/list/${storeDetail.store}`);
+  };
   return (
     <>
       <DetailContainer>
         {user === storeDetail.user && (
-          <ButtonBox>
-            <Button onClick={handlerStoreUpdate}>수정</Button>
-            <Button onClick={handlerStoreDelete}>삭제</Button>
-          </ButtonBox>
+          <>
+            <ButtonBox>
+              <ButtonBox2>
+                <Button onClick={handlerStoreUpdate}>수정</Button>
+                <Button onClick={handlerStoreDelete}>삭제</Button>
+              </ButtonBox2>
+              <Button onClick={handlerStoreName}>예약 명단</Button>
+            </ButtonBox>
+          </>
         )}
         {sessionStorage.getItem("token") &&
           (role === "USER" || role == null) && (
@@ -253,6 +262,10 @@ const ButtonBox = styled.div`
   width: 100%;
   justify-content: space-between;
   margin: 10px 0;
+`;
+const ButtonBox2 = styled.div`
+  display: flex;
+  gap: 10px;
 `;
 const DetailContainer = styled.div`
   display: flex;

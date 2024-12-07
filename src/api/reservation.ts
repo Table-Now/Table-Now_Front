@@ -5,6 +5,7 @@ import {
 import { ReservationCheck } from "../types/reservation/check";
 import { myReservationListTypes } from "../types/reservation/myList";
 import { instance } from "./instance";
+import { ReservationRosterType } from "../types/reservation/reservationRoster";
 
 const getAuthHeader = () => {
   const token = sessionStorage.getItem("token");
@@ -51,6 +52,22 @@ export const reservationApi = {
         `reservation/approval?phone=${phone}`,
         null, // POST 요청에서 body를 전달하지 않는 경우 `null`을 사용할 수 있습니다
         { headers: getAuthHeader() } // headers는 세 번째 인자로 전달
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+};
+
+export const reservationListApi = {
+  reservationList: async (store: string | null) => {
+    try {
+      const response = await instance.get<ReservationRosterType[]>(
+        `manager/confirm?store=${store}`,
+        {
+          headers: getAuthHeader(),
+        }
       );
       return response.data;
     } catch (error) {

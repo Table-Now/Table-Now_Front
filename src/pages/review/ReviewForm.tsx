@@ -22,12 +22,13 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
         store: store,
         contents: contents,
         role: role,
-        secretReview: secretReview, // secretReview 값 전송
-        password: secretReview ? password : undefined, // secretReview가 true일 때만 비밀번호 포함
+        secretReview: secretReview,
+        password: secretReview ? password : undefined,
       };
       const newReview = await reviewApi.registerReview(formData);
       setContents("");
-      setPassword(""); // 리뷰 등록 후 비밀번호 초기화
+      setError(null);
+      setPassword("");
       setSecretReview(false); // secretReview 초기화
       onReviewSubmitted(newReview); // 새로운 리뷰를 부모 컴포넌트에 전달
     } catch (err: any) {

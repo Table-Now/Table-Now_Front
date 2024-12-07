@@ -54,17 +54,6 @@ const MyReservationList: React.FC = () => {
     navigate(`/store/${id}`);
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = String(date.getFullYear()).slice(2);
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-
-    return `${year}-${month}-${day} ${hours}:${minutes}`;
-  };
-
   return (
     <Container>
       <Title>나의 예약 내역</Title>
@@ -79,17 +68,8 @@ const MyReservationList: React.FC = () => {
             >
               <ReservationHeader>
                 <StoreName>{reservation.store}</StoreName>
-                {/* <StatusBadge $status={reservation.reservationStatus}>
-                  {reservation.reservationStatus === "REQ" && "예약 대기"}
-                  {reservation.reservationStatus === "ING" && "예약 확정"}
-                  {reservation.reservationStatus === "STOP" && "예약 확정"}
-                </StatusBadge> */}
               </ReservationHeader>
               <ReservationInfo>
-                {/* <InfoItem>
-                  <Label>예약 시간</Label>
-                  <Value>{formatDate(reservation.reservationDateTime)}</Value>
-                </InfoItem> */}
                 <InfoItem>
                   <Label>인원</Label>
                   <Value>{reservation.peopleNb}명</Value>

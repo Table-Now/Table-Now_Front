@@ -1,3 +1,4 @@
+import { WishListStoreResponse } from "../types/wishlist/wishlist";
 import { instance } from "./instance";
 
 const getAuthHeader = () => {
@@ -34,6 +35,21 @@ export const wishlistApi = {
         params: { user, store },
         headers: getAuthHeader(),
       });
+      return response.data;
+    } catch (error) {
+      console.error("Error checking like status:", error);
+      throw error;
+    }
+  },
+
+  wishlist: async (user: string | null) => {
+    try {
+      const response = await instance.get<WishListStoreResponse[]>(
+        `wishlist/?user=${user}`,
+        {
+          headers: getAuthHeader(),
+        }
+      );
       return response.data;
     } catch (error) {
       console.error("Error checking like status:", error);
