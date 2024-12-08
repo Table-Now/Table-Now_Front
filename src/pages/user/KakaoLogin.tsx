@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { userApi } from "../../api/user";
+import styled from "styled-components";
 
 export const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_REDIRECT_URI}&response_type=code`;
 
@@ -17,9 +18,9 @@ const KakaoCallback = () => {
 
       try {
         const response = await userApi.kakaoLogin(code);
-        const userId = response.email.split("@")[0];
-        sessionStorage.setItem("token", response.accessToken);
-        sessionStorage.setItem("email", userId);
+        console.log(response);
+        sessionStorage.setItem("kakaoAccessToken", response.kakaoAccessToken);
+        sessionStorage.setItem("token", response.jwtToken);
         navigate("/");
       } catch (error) {
         console.error("Error during Kakao login:", error);
@@ -38,13 +39,51 @@ const KakaoCallback = () => {
       console.error("No authorization code found");
       navigate("/login");
     }
-  }, [location.search, navigate, isRequesting]); // 의존성 배열에서 handleKakaoLogin 제거
+  }, [location.search, navigate, isRequesting]);
 
   if (isLoading) {
-    return <div>로그인 중...</div>;
+    return (
+      <LoadingWrapper>
+        <Spinner />
+        <LoadingText>로그인 중...</LoadingText>
+      </LoadingWrapper>
+    );
   }
 
   return null;
 };
 
 export default KakaoCallback;
+
+const LoadingWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f7f9fc;
+`;
+
+const Spinner = styled.div`
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+const LoadingText = styled.p`
+  margin-top: 16px;
+  font-size: 18px;
+  color: #555;
+`;

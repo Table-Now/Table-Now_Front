@@ -64,7 +64,7 @@ const Login = () => {
 
         <KakaoButton>
           <a href={KAKAO_AUTH_URL}>
-            <img alt="kakao_login" src="/img/kakao_login.jpg"></img>
+            <img alt="kakao_login" src="/img/kakao_login.jpg" />
           </a>
         </KakaoButton>
       </LoginForm>
