@@ -19,6 +19,7 @@ export const reservationApi = {
       data,
       { headers: getAuthHeader() }
     );
+    console.log(response);
     return response.data;
   },
 
@@ -40,8 +41,8 @@ export const reservationApi = {
     return response.data;
   },
 
-  myReservationCancel: async (id: number | undefined) => {
-    await instance.delete(`reservation/delete?id=${id}`, {
+  myReservationCancel: async (store: string | undefined) => {
+    await instance.delete(`reservation/delete?store=${store}`, {
       headers: getAuthHeader(),
     });
   },

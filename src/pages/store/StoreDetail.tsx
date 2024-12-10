@@ -139,7 +139,7 @@ const StoreDetail: React.FC = () => {
 
   const handleReservationCancel = async () => {
     try {
-      await reservationApi.myReservationCancel(storeDetail?.id);
+      await reservationApi.myReservationCancel(storeDetail?.store);
       alert("예약이 취소되었습니다.");
       window.location.reload();
     } catch (err: any) {
