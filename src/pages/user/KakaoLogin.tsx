@@ -18,13 +18,12 @@ const KakaoCallback = () => {
 
       try {
         const response = await userApi.kakaoLogin(code);
-        console.log(response);
         sessionStorage.setItem("kakaoAccessToken", response.kakaoAccessToken);
         sessionStorage.setItem("token", response.jwtToken);
         navigate("/");
-      } catch (error) {
-        console.error("Error during Kakao login:", error);
-        alert("로그인 중 오류가 발생했습니다. 다시 시도해 주세요.");
+      } catch (error: any) {
+        // alert(error.response?.data?.message);
+        alert("탈퇴한 계정입니다. 다른 계정으로 로그인 해주세요");
         navigate("/login");
       } finally {
         setIsRequesting(false);

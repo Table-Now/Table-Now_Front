@@ -14,34 +14,32 @@ const Mypage: React.FC = () => {
   const [userInfo, setUserInfo] = useState<MyInfoResponse | null>(null);
   const [showResetModal, setShowResetModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [resetPasswordData, setResetPasswordData] = useState<MyInfoUpdate>({
-    password: "",
-    email: "",
+  const [phoneUpdate, setPhoneUpdate] = useState<MyInfoUpdate>({
     phone: "",
   });
 
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        if (user) {
-          const info = await userApi.getMyInfo(user);
-          setUserInfo(info);
-        }
-      } catch (error) {
-        console.error("Failed to fetch user info:", error);
-        alert("사용자 정보를 불러오는데 실패했습니다.");
+  const fetchUserInfo = async () => {
+    try {
+      if (user) {
+        const info = await userApi.getMyInfo(user);
+        setUserInfo(info);
       }
-    };
+    } catch (error) {
+      console.error("Failed to fetch user info:", error);
+      alert("사용자 정보를 불러오는데 실패했습니다.");
+    }
+  };
 
+  useEffect(() => {
     fetchUserInfo();
   }, [user]);
 
   const handleUpdateInfo = async () => {
     try {
-      await userApi.updateUser(resetPasswordData);
-      alert("정보가 성공적으로 수정되었습니다. 다시 로그인을 진행해 주세요");
+      await userApi.updateUser(phoneUpdate?.phone);
+      alert("정보가 성공적으로 수정되었습니다.");
       setShowResetModal(false);
-      navigate("/login");
+      fetchUserInfo();
     } catch (error) {
       alert("정보 수정에 실패했습니다. 다시 한번 확인해 주세요");
       console.error(error);
@@ -84,16 +82,16 @@ const Mypage: React.FC = () => {
               <Value>{userInfo.user}</Value>
             </InfoItem>
             <InfoItem>
-              <Label>이름:</Label>
-              <Value>{userInfo.name}</Value>
-            </InfoItem>
-            <InfoItem>
               <Label>이메일:</Label>
               <Value>{userInfo.email}</Value>
             </InfoItem>
             <InfoItem>
-              <Label>전화번호:</Label>
+              <Label>Phone:</Label>
               <Value>{userInfo.phone}</Value>
+            </InfoItem>
+            <InfoItem>
+              <Label>Type:</Label>
+              <Value>{userInfo.role}</Value>
             </InfoItem>
             <InfoItem>
               <Label>가입일:</Label>
@@ -147,34 +145,12 @@ const Mypage: React.FC = () => {
           <Modal>
             <h2>내 정보 수정</h2>
             <Input
-              type="password"
-              placeholder="새 비밀번호"
-              value={resetPasswordData.password}
-              onChange={(e) =>
-                setResetPasswordData({
-                  ...resetPasswordData,
-                  password: e.target.value,
-                })
-              }
-            />
-            <Input
-              type="email"
-              placeholder="이메일"
-              value={resetPasswordData.email}
-              onChange={(e) =>
-                setResetPasswordData({
-                  ...resetPasswordData,
-                  email: e.target.value,
-                })
-              }
-            />
-            <Input
               type="tel"
               placeholder="전화번호"
-              value={resetPasswordData.phone}
+              value={phoneUpdate.phone}
               onChange={(e) =>
-                setResetPasswordData({
-                  ...resetPasswordData,
+                setPhoneUpdate({
+                  ...phoneUpdate,
                   phone: e.target.value,
                 })
               }

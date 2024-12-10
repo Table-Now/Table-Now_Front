@@ -2,7 +2,7 @@ import { RegisterFormData, RegisterResponse } from "../types/users/join";
 import { LoginFormData, LoginResponse } from "../types/users/login";
 import { RePassword } from "../types/users/passwordReset";
 import { Delete } from "../types/users/delete";
-import { MyInfoResponse, MyInfoUpdate } from "../types/users/myInfo";
+import { MyInfoResponse } from "../types/users/myInfo";
 import { EmailAuthResponse } from "../types/users/emailAuth";
 import { instance } from "./instance";
 
@@ -33,6 +33,34 @@ export const userApi = {
     return response.data;
   },
 
+  updateUser: async (phone: string | undefined): Promise<string> => {
+    const response = await instance.patch(
+      `kakao/infoupdate`,
+      { phone },
+      {
+        headers: getAuthHeader(),
+      }
+    );
+
+    return response.data;
+  },
+
+  deleteUser: async (user: string | null): Promise<Delete> => {
+    const response = await instance.delete(`kakao/delete`, {
+      params: { user },
+      headers: getAuthHeader(),
+    });
+    return response.data;
+  },
+
+  getMyInfo: async (user: string | null): Promise<MyInfoResponse> => {
+    const response = await instance.get<MyInfoResponse>(`kakao/myinfo`, {
+      params: { user },
+      headers: getAuthHeader(),
+    });
+    return response.data;
+  },
+
   register: async (data: RegisterFormData): Promise<RegisterResponse> => {
     const response = await instance.post<RegisterResponse>(
       `user/register`,
@@ -53,29 +81,6 @@ export const userApi = {
     return response.data;
   },
 
-  updateUser: async (data: MyInfoUpdate): Promise<string> => {
-    const response = await instance.patch(`user/infoupdate`, data, {
-      headers: getAuthHeader(),
-    });
-
-    return response.data;
-  },
-
-  deleteUser: async (user: string | null): Promise<Delete> => {
-    const response = await instance.delete(`user/delete`, {
-      params: { user },
-      headers: getAuthHeader(),
-    });
-    return response.data;
-  },
-
-  getMyInfo: async (user: string | null): Promise<MyInfoResponse> => {
-    const response = await instance.get<MyInfoResponse>(`user/myinfo`, {
-      params: { user },
-      headers: getAuthHeader(),
-    });
-    return response.data;
-  },
   verifyEmail: async (
     user: string,
     key: string
