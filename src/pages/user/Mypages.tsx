@@ -62,13 +62,9 @@ const Mypage: React.FC = () => {
   };
 
   const logoutHandler = async () => {
-    try {
-      await userApi.kakaoLogout(sessionStorage.getItem("kakaoAccessToken"));
-      sessionStorage.clear();
-      navigate("/login");
-    } catch (err) {
-      console.log(err);
-    }
+    await userApi.kakaoLogout(sessionStorage.getItem("kakaoAccessToken"));
+    sessionStorage.clear();
+    navigate("/login");
   };
 
   return (

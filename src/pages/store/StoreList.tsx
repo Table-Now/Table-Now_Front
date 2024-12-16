@@ -141,7 +141,8 @@ const StoreList: React.FC = () => {
               />
               <StoreInfo>
                 <StoreTitle>{store.title}</StoreTitle>
-                <StoreDescription>{store.description}</StoreDescription>
+                {/* <StoreDescription>{store.description}</StoreDescription> */}
+                <StoreDescription>{store.location}</StoreDescription>
                 <DateInfo>
                   <span>Open: {store.openDate}</span> |{" "}
                   <span>Close: {store.closeDate}</span>

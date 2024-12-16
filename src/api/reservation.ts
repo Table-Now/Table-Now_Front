@@ -19,7 +19,6 @@ export const reservationApi = {
       data,
       { headers: getAuthHeader() }
     );
-    console.log(response);
     return response.data;
   },
 

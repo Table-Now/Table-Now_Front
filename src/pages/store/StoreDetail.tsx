@@ -308,6 +308,7 @@ const Description = styled.p`
   color: #666;
   line-height: 1.6;
   margin-bottom: 16px;
+  white-space: pre-wrap;
 `;
 
 const DetailRow = styled.div`

@@ -103,7 +103,7 @@ const KakaoMap: React.FC<KakaoMapProps> = ({
       ref={mapRef}
       style={{
         width: "100%",
-        height: "400px",
+        height: "300px",
         margin: "20px 0",
         border: "2px solid #ddd", // 지도 테두리
         borderRadius: "8px",
