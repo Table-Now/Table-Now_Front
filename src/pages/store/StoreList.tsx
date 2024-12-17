@@ -170,7 +170,7 @@ const Container = styled.div`
 const SearchSection = styled.div`
   display: flex;
   gap: 1rem;
-  margin: 15px 0 15px 0;
+
   align-items: center;
 `;
 
