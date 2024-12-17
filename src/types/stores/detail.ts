@@ -15,3 +15,14 @@ export interface StoreDetailType {
   longitude?: number;
   distance?: number;
 }
+
+interface StoreDetailData {
+  storeContents?: string;
+  latitude?: number;
+  longitude?: number;
+  store?: string;
+}
+
+export interface HomeProps {
+  storeDetail: StoreDetailData;
+}

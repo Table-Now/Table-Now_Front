@@ -70,3 +70,5 @@ export const managerStoreApi = {
     return response.data;
   },
 };
+
+export const menuApi = {};

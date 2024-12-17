@@ -4,6 +4,7 @@ import { storeApi } from "../../api/store";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import { useUser } from "../../hooks/useUser";
+import { MenuInput } from "../../components/MenuInput";
 
 const StoreRegister: React.FC = () => {
   const navigate = useNavigate();
@@ -24,6 +25,10 @@ const StoreRegister: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [menus, setMenus] = useState<
+    { name: string; price: string; image: File | null }[]
+  >([]);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -32,6 +37,19 @@ const StoreRegister: React.FC = () => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleMenuChange = (
+    index: number,
+    menu: { name: string; price: string; image: File | null }
+  ) => {
+    const updatedMenus = [...menus];
+    updatedMenus[index] = menu;
+    setMenus(updatedMenus);
+  };
+
+  const handleAddMenu = () => {
+    setMenus([...menus, { name: "", price: "", image: null }]);
   };
 
   const handleWeekOffChange = (day: string) => {
@@ -64,12 +82,20 @@ const StoreRegister: React.FC = () => {
         ...formData,
         user: user || "",
       };
+
+      // storeDto를 JSON으로 추가
       formDataToSend.append(
-        "dto",
+        "storeDto",
         new Blob([JSON.stringify(storeData)], {
           type: "application/json",
         })
       );
+
+      // menuDtos를 JSON 배열로 추가
+      const menuDtosBlob = new Blob([JSON.stringify(menus)], {
+        type: "application/json",
+      });
+      formDataToSend.append("menuDtos", menuDtosBlob, "menuDtos.json");
 
       if (storeImg) {
         formDataToSend.append("image", storeImg);
@@ -184,6 +210,18 @@ const StoreRegister: React.FC = () => {
             ))}
           </CheckboxGroup>
         </FormGroup>
+
+        <Button type="button" onClick={handleAddMenu}>
+          메뉴 추가
+        </Button>
+        {menus.map((menu, index) => (
+          <MenuInput
+            key={index}
+            index={index}
+            menu={menu}
+            onChange={handleMenuChange}
+          />
+        ))}
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
 

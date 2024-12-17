@@ -29,8 +29,8 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
       setContents("");
       setError(null);
       setPassword("");
-      setSecretReview(false); // secretReview 초기화
-      onReviewSubmitted(newReview); // 새로운 리뷰를 부모 컴포넌트에 전달
+      setSecretReview(false);
+      onReviewSubmitted(newReview);
     } catch (err: any) {
       alert(err.response?.data?.message);
     }
@@ -42,7 +42,6 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
 
   return (
     <FormContainer>
-      <Title>리뷰 작성</Title>
       <Textarea
         value={contents}
         onChange={(e) => setContents(e.target.value)}

@@ -33,3 +33,10 @@ export interface ReviewPassword {
   user: string;
   password: string;
 }
+
+export interface ReviewProps {
+  reviews: ReviewListTypes[];
+  onReviewDeleted: (id: number) => void;
+  storeDetail: string | undefined;
+  setReviews: React.Dispatch<React.SetStateAction<ReviewListTypes[]>>;
+}

@@ -7,13 +7,16 @@ import Button from "../../components/Button";
 import { useUser } from "../../hooks/useUser";
 import ReservationModal from "../../components/modal/ReservationModal";
 import { reservationApi } from "../../api/reservation";
-import ReviewForm from "../review/ReviewForm";
-import ReviewList from "../review/ReviewList";
 import { reviewApi } from "../../api/review";
 import { ReviewListTypes } from "../../types/review/Review";
 import { wishlistApi } from "../../api/wishlist";
-import KakaoMap from "../../components/KakaoMap";
 import { userApi } from "../../api/user";
+import { isOpenNow, isWeekOff } from "../../util/time";
+import Tabs from "../../components/Tabs";
+import Home from "../../components/tabslist/Home";
+import Menu from "../../components/tabslist/Menu";
+import Review from "../../components/tabslist/Review";
+import DetailFooter from "../../components/DetailFooter";
 
 const StoreDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -23,6 +26,8 @@ const StoreDetail: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isReserved, setIsReserved] = useState<boolean>(false);
   const [isLiked, setIsLiked] = useState<boolean>(false);
+
+  const [activeTab, setActiveTab] = useState("home");
 
   const [reviews, setReviews] = useState<ReviewListTypes[]>([]);
 
@@ -120,9 +125,6 @@ const StoreDetail: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const handleReviewSubmitted = (newReview: ReviewListTypes) => {
-    setReviews((prevReviews) => [newReview, ...prevReviews]);
-  };
   const handleReviewDeleted = (deletedReviewId: number) => {
     setReviews((prevReviews) =>
       prevReviews.filter((review) => review.id !== deletedReviewId)
@@ -152,7 +154,7 @@ const StoreDetail: React.FC = () => {
     try {
       const response = await reservationApi.myReservationApproval(phone.phone);
       if (response && response.message) {
-        alert(response.message); // 메시지를 alert로 표시
+        alert(response.message);
       }
     } catch (err: any) {
       alert(err.response?.data?.message);
@@ -162,20 +164,16 @@ const StoreDetail: React.FC = () => {
   const handlerStoreName = async () => {
     navigate(`/manager/store/list/${storeDetail.store}`);
   };
+
+  const isStoreOpenNow = isOpenNow(
+    storeDetail?.storeOpen ?? "00:00",
+    storeDetail?.storeClose ?? "00:00"
+  );
+  const isStoreWeekOff = isWeekOff(storeDetail?.storeWeekOff ?? "");
+
   return (
     <>
       <DetailContainer>
-        {user === storeDetail.user && (
-          <>
-            <ButtonBox>
-              <ButtonBox2>
-                <Button onClick={handlerStoreUpdate}>수정</Button>
-                <Button onClick={handlerStoreDelete}>삭제</Button>
-              </ButtonBox2>
-              <Button onClick={handlerStoreName}>예약 명단</Button>
-            </ButtonBox>
-          </>
-        )}
         {sessionStorage.getItem("token") &&
           (role === "USER" || role == null) && (
             <ButtonBox>
@@ -195,41 +193,76 @@ const StoreDetail: React.FC = () => {
           alt={storeDetail.store}
         />
 
-        <KakaoMap
-          latitude={storeDetail.latitude}
-          longitude={storeDetail.longitude}
-          storeName={storeDetail.store}
-        />
-
         <InfoSection>
+          {sessionStorage.getItem("token") && role === "USER" && (
+            <LikeButton onClick={handleLikeToggle}>
+              <LikeIcon
+                src={isLiked ? "/img/unlike.png" : "/img/like.png"}
+                alt="Like"
+              />
+            </LikeButton>
+          )}
           <Title>{storeDetail.store}</Title>
-          <Description>{storeDetail.storeContents}</Description>
+          <DetailRow>{storeDetail.storeLocation}</DetailRow>
+          <DetailRow>{storeDetail.rating ?? 0}</DetailRow>
+          <DetailRow>번호</DetailRow>
           <DetailRow>
-            <Label>Location:</Label> {storeDetail.storeLocation}
-          </DetailRow>
-          <DetailRow>
-            <Label>Rating:</Label> {storeDetail.rating ?? 0}
-          </DetailRow>
-          <DetailRow>
-            <Label>Open:</Label> {storeDetail.storeOpen}
-          </DetailRow>
-          <DetailRow>
-            <Label>Close:</Label> {storeDetail.storeClose}
-          </DetailRow>
-          <DetailRow>
-            <Label>Week Off:</Label> {storeDetail.storeWeekOff}
+            {isStoreWeekOff ? (
+              <span
+                style={{
+                  color: "orange",
+                  marginRight: "10px",
+                  fontWeight: "bold",
+                }}
+              >
+                휴무
+              </span>
+            ) : isStoreOpenNow ? (
+              <span
+                style={{
+                  color: "green",
+                  marginRight: "10px",
+                  fontWeight: "bold",
+                }}
+              >
+                영업 중
+              </span>
+            ) : (
+              <span
+                style={{
+                  color: "red",
+                  marginRight: "10px",
+                  fontWeight: "bold",
+                }}
+              >
+                영업 종료
+              </span>
+            )}
+            {storeDetail.storeOpen} ~ {storeDetail.storeClose}
           </DetailRow>
 
-          <TitleRow>
-            {sessionStorage.getItem("token") && role === "USER" && (
-              <LikeButton onClick={handleLikeToggle}>
-                <LikeIcon
-                  src={isLiked ? "/img/unlike.png" : "/img/like.png"}
-                  alt="Like"
-                />
-              </LikeButton>
+          <DetailRow>
+            <Label>휴무일</Label>
+            {storeDetail.storeWeekOff ? (
+              <div>{storeDetail.storeWeekOff}</div>
+            ) : (
+              <div>없음</div>
             )}
-          </TitleRow>
+          </DetailRow>
+
+          <Tabs activeTab={activeTab} onTabChange={setActiveTab} />
+
+          {activeTab === "home" && <Home storeDetail={storeDetail} />}
+
+          {activeTab === "menu" && <Menu />}
+          {activeTab === "review" && (
+            <Review
+              storeDetail={storeDetail.store}
+              reviews={reviews}
+              setReviews={setReviews}
+              onReviewDeleted={handleReviewDeleted}
+            />
+          )}
         </InfoSection>
 
         <ReservationModal
@@ -241,16 +274,20 @@ const StoreDetail: React.FC = () => {
           storeClose={storeDetail?.storeClose ?? ""}
           storeWeekOff={storeDetail?.storeWeekOff ?? ""}
         />
+        {user === storeDetail.user && (
+          <>
+            <ButtonBox>
+              <ButtonBox2>
+                <Button onClick={handlerStoreUpdate}>수정</Button>
+                <Button onClick={handlerStoreDelete}>삭제</Button>
+              </ButtonBox2>
+              <Button onClick={handlerStoreName}>예약 명단</Button>
+            </ButtonBox>
+          </>
+        )}
       </DetailContainer>
 
-      {sessionStorage.getItem("token") && (
-        <ReviewForm
-          store={storeDetail.store ?? ""}
-          onReviewSubmitted={handleReviewSubmitted}
-        />
-      )}
-
-      <ReviewList reviews={reviews} onReviewDeleted={handleReviewDeleted} />
+      <DetailFooter />
     </>
   );
 };
@@ -277,15 +314,26 @@ const DetailContainer = styled.div`
   background-color: #f9f9f9;
   border-radius: 12px;
   box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.4);
-  position: relative; /* 추가 */
+  position: relative;
 `;
 
 const Image = styled.img`
-  width: 90%;
-  height: 50%;
+  width: 600px;
+  height: 400px;
+  object-fit: cover;
   border-radius: 12px;
   margin-bottom: 10px;
   box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.2);
+
+  @media (max-width: 768px) {
+    width: 400px;
+    height: 300px;
+  }
+
+  @media (max-width: 450px) {
+    width: 270px;
+    height: 170px;
+  }
 `;
 
 const InfoSection = styled.div`
@@ -301,14 +349,6 @@ const Title = styled.h2`
   font-weight: 700;
   color: #333;
   margin-bottom: 12px;
-`;
-
-const Description = styled.p`
-  font-size: 16px;
-  color: #666;
-  line-height: 1.6;
-  margin-bottom: 16px;
-  white-space: pre-wrap;
 `;
 
 const DetailRow = styled.div`
@@ -333,22 +373,11 @@ const LoadingMessage = styled.div`
   color: #888;
 `;
 
-const TitleRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-`;
-
 const LikeButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  padding: 8px;
   transition: transform 0.2s ease;
-  position: absolute; /* 수정 */
-  bottom: 10px; /* 오른쪽 아래로 배치 */
-  right: 10px; /* 오른쪽 아래로 배치 */
 
   &:hover {
     transform: scale(1.1);
@@ -358,11 +387,9 @@ const LikeButton = styled.button`
     outline: none;
   }
 `;
-
 const LikeIcon = styled.img`
-  width: 100px;
-  height: 100px;
-  transition: filter 0.2s ease;
+  width: 50px;
+  height: 60px;
 `;
 
 const ReservationBtn = styled.div`
