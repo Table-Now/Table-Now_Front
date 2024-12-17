@@ -281,11 +281,11 @@ const DetailContainer = styled.div`
 `;
 
 const Image = styled.img`
-  width: 100%;
-  max-width: 400px;
+  width: 90%;
+  height: 50%;
   border-radius: 12px;
-  margin-bottom: 20px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  margin-bottom: 10px;
+  box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.2);
 `;
 
 const InfoSection = styled.div`

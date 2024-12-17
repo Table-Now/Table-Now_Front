@@ -86,7 +86,7 @@ const StoreRegister: React.FC = () => {
 
   return (
     <Container>
-      <Title>상점 등록</Title>
+      <Title>매장 등록</Title>
       <Form onSubmit={handleSubmit}>
         <FormGroup>
           <Label>상점 이름</Label>
@@ -114,7 +114,16 @@ const StoreRegister: React.FC = () => {
 
         <FormGroup>
           <Label>상점 이미지</Label>
-          <Input type="file" accept="image/*" onChange={handleImageChange} />
+          <FileInput
+            type="file"
+            id="storeImg"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
+          <FileInputLabel htmlFor="storeImg">
+            {storeImg ? "파일 선택됨" : "파일 선택하기"}
+          </FileInputLabel>
+          {storeImg && <FileName>{storeImg.name}</FileName>}
         </FormGroup>
 
         <FormGroup>
@@ -216,6 +225,30 @@ const Label = styled.label`
   margin-bottom: 0.5rem;
   color: #333;
   font-weight: 600;
+`;
+
+const FileInput = styled.input`
+  display: none;
+`;
+
+const FileInputLabel = styled.label`
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #ff5733;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #ff3508;
+  }
+`;
+
+const FileName = styled.span`
+  margin-left: 10px;
+  font-size: 0.9rem;
+  color: #666;
 `;
 
 const Input = styled.input`

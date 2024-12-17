@@ -3,12 +3,10 @@ import styled from "styled-components";
 import { Store, SortType } from "../../types/stores/list";
 import { storeApi } from "../../api/store";
 import Button from "../../components/Button";
-import { useUser } from "../../hooks/useUser";
 import { useNavigate } from "react-router-dom";
 
 const StoreList: React.FC = () => {
   const navigate = useNavigate();
-  const { role } = useUser();
 
   const [stores, setStores] = useState<Store[]>([]);
   const [keyword, setKeyword] = useState<string>("");
@@ -101,11 +99,7 @@ const StoreList: React.FC = () => {
   };
 
   return (
-    <Container>
-      {role === "MANAGER" || role === "ADMIN" ? (
-        <Button to="/storeregister">상점 등록</Button>
-      ) : null}
-
+    <>
       <SearchSection>
         <SearchForm onSubmit={handleSearch}>
           <SearchInput
@@ -116,16 +110,16 @@ const StoreList: React.FC = () => {
           />
           <Button type="submit">검색</Button>
         </SearchForm>
-        <SortSelect
-          value={sortType}
-          onChange={(e) => handleSortChange(e.target.value as SortType)}
-        >
-          <option value="ALL">전체</option>
-          <option value="DISTANCE">거리순</option>
-          <option value="RATING_HIGH">평점 높은순</option>
-          <option value="RATING_LOW">평점 낮은순</option>
-        </SortSelect>
       </SearchSection>
+      <SortSelect
+        value={sortType}
+        onChange={(e) => handleSortChange(e.target.value as SortType)}
+      >
+        <option value="ALL">전체</option>
+        <option value="DISTANCE">거리순</option>
+        <option value="RATING_HIGH">평점 높은순</option>
+        <option value="RATING_LOW">평점 낮은순</option>
+      </SortSelect>
 
       <ListContainer>
         {loading ? (
@@ -157,20 +151,16 @@ const StoreList: React.FC = () => {
           ))
         )}
       </ListContainer>
-    </Container>
+    </>
   );
 };
 
 export default StoreList;
 
-const Container = styled.div`
-  padding: 2rem;
-`;
-
 const SearchSection = styled.div`
   display: flex;
   gap: 1rem;
-
+  margin: 20px;
   align-items: center;
 `;
 
@@ -189,6 +179,7 @@ const SearchInput = styled.input`
 `;
 
 const SortSelect = styled.select`
+  margin: 0 0 20px 20px;
   padding: 0.5rem;
   border: 1px solid #ddd;
   border-radius: 4px;

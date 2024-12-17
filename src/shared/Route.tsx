@@ -27,9 +27,22 @@ interface ProtectedRouteProps {
 
 const AppContent: React.FC = () => {
   const location = useLocation();
-  const hideHeaderRoutes = ["/login", "/join", "/auth", "/storeregister"];
+  const hideHeaderRoutes = [
+    "/login",
+    "/join",
+    "/auth",
+    "/storeregister",
+    "/store/:id",
+  ];
 
-  const showHeader = !hideHeaderRoutes.includes(location.pathname);
+  const showHeader = !hideHeaderRoutes.some((route) => {
+    if (route.includes(":")) {
+      // 동적 라우트를 정규식으로 변환하여 일치 검사
+      const dynamicRoute = new RegExp(`^${route.replace(":id", "[^/]+")}$`);
+      return dynamicRoute.test(location.pathname);
+    }
+    return route === location.pathname;
+  });
 
   const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
     const token = sessionStorage.getItem("token");

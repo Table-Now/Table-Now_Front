@@ -35,7 +35,7 @@ const Header: React.FC = () => {
         <RightSection>
           {isLogin ? (
             <>
-              <Button to="/mypage">마이페이지</Button>
+              <Button to="/mypage">My</Button>
             </>
           ) : (
             <>
@@ -68,7 +68,7 @@ const HeaderContent = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 5px 20px;
+  padding: 10px 20px;
 `;
 
 const LeftSection = styled.div`
@@ -97,6 +97,6 @@ const Logo = styled(Link)`
 `;
 
 const StImg = styled.img`
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
 `;

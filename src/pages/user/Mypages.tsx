@@ -98,6 +98,8 @@ const Mypage: React.FC = () => {
       </UserInfoSection>
 
       <ButtonBox>
+        {role === "MANAGER" && <Button to="/storeregister">상점 등록</Button>}
+
         {role === "USER" && (
           <>
             <Button
