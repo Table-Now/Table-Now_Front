@@ -8,14 +8,14 @@ const getAuthHeader = () => {
 
 export const reviewApi = {
   registerReview: async (formData: ReviewRegister) => {
-    const response = await instance.post(`review/register`, formData, {
+    const response = await instance.post(`reviews/register`, formData, {
       headers: getAuthHeader(),
     });
     return response.data;
   },
 
   getReview: async (store: string) => {
-    const response = await instance.get(`review/list?store=${store}`, {
+    const response = await instance.get(`reviews/review/${store}`, {
       headers: getAuthHeader(),
     });
     return response.data;
@@ -23,14 +23,14 @@ export const reviewApi = {
 
   deleteReview: async (id: number, user: string | null) => {
     const response = await instance.delete(
-      `review/delete?user=${user}&id=${id}`,
+      `reviews/delete?user=${user}&id=${id}`,
       { headers: getAuthHeader() }
     );
     return response.data;
   },
 
   securityReviewCheck: async (data: ReviewPassword) => {
-    const response = await instance.post(`review/passwordrequest`, data, {
+    const response = await instance.post(`reviews/passwordrequest`, data, {
       headers: getAuthHeader(),
     });
     return response.data;

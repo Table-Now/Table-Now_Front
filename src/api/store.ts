@@ -46,8 +46,7 @@ export const storeApi = {
   },
 
   updateStore: async (id: number, storeData: StoreDetailType) => {
-    const response = await instance.put(`store/update`, storeData, {
-      params: { id },
+    const response = await instance.put(`store/stores/${id}`, storeData, {
       headers: getAuthHeader(),
     });
     return response.data;
@@ -63,8 +62,7 @@ export const storeApi = {
 
 export const managerStoreApi = {
   storeList: async (user: string) => {
-    const response = await instance.get(`manager/list`, {
-      params: { user },
+    const response = await instance.get(`manager/managers/${user}/list`, {
       headers: getAuthHeader(),
     });
     return response.data;

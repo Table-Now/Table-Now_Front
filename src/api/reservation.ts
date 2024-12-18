@@ -15,7 +15,7 @@ const getAuthHeader = () => {
 export const reservationApi = {
   register: async (data: ReservationRequest): Promise<ReservationResponse> => {
     const response = await instance.post<ReservationResponse>(
-      `reservations`,
+      `reservations/reservation/create`,
       data,
       { headers: getAuthHeader() }
     );
@@ -64,7 +64,7 @@ export const reservationListApi = {
   reservationList: async (store: string | null) => {
     try {
       const response = await instance.get<ReservationRosterType[]>(
-        `manager/confirm?store=${store}`,
+        `manager/managers/${store}/reservations`,
         {
           headers: getAuthHeader(),
         }
