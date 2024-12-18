@@ -65,6 +65,7 @@ const Mypage: React.FC = () => {
     await userApi.kakaoLogout(sessionStorage.getItem("kakaoAccessToken"));
     sessionStorage.clear();
     navigate("/");
+    window.location.reload();
   };
 
   return (

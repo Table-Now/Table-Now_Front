@@ -35,7 +35,7 @@ export const userApi = {
 
   updateUser: async (phone: string | undefined): Promise<string> => {
     const response = await instance.patch(
-      `kakao/infoupdate`,
+      `kakao/${phone}`, // phone을 경로에 포함시킴
       { phone },
       {
         headers: getAuthHeader(),
@@ -44,7 +44,6 @@ export const userApi = {
 
     return response.data;
   },
-
   deleteUser: async (user: string | null): Promise<Delete> => {
     const response = await instance.delete(`kakao/delete`, {
       params: { user },
@@ -54,8 +53,7 @@ export const userApi = {
   },
 
   getMyInfo: async (user: string | null): Promise<MyInfoResponse> => {
-    const response = await instance.get<MyInfoResponse>(`kakao/myinfo`, {
-      params: { user },
+    const response = await instance.get<MyInfoResponse>(`kakao/info/${user}`, {
       headers: getAuthHeader(),
     });
     return response.data;
