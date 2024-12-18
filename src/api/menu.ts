@@ -6,9 +6,8 @@ const getAuthHeader = () => {
 };
 
 export const menuApi = {
-  getMenuList: async (store: number | undefined) => {
-    const response = await instance.get(`menus/list`, {
-      params: { store },
+  getMenuList: async (storeId: number | undefined) => {
+    const response = await instance.get(`menus/menu/${storeId}`, {
       headers: getAuthHeader(),
     });
     return response.data;

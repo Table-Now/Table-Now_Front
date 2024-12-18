@@ -21,11 +21,10 @@ export const reviewApi = {
     return response.data;
   },
 
-  deleteReview: async (id: number, user: string | null) => {
-    const response = await instance.delete(
-      `reviews/delete?user=${user}&id=${id}`,
-      { headers: getAuthHeader() }
-    );
+  deleteReview: async (reviewId: number, user: string | null) => {
+    const response = await instance.delete(`reviews/${reviewId}`, {
+      headers: getAuthHeader(),
+    });
     return response.data;
   },
 
