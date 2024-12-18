@@ -91,15 +91,27 @@ const StoreRegister: React.FC = () => {
         })
       );
 
-      // menuDtos를 JSON 배열로 추가
-      const menuDtosBlob = new Blob([JSON.stringify(menus)], {
-        type: "application/json",
-      });
-      formDataToSend.append("menuDtos", menuDtosBlob, "menuDtos.json");
-
+      // 매장 이미지 추가
       if (storeImg) {
         formDataToSend.append("image", storeImg);
       }
+
+      // 메뉴 데이터를 JSON 문자열로 추가
+      const menuDtosJson = JSON.stringify(
+        menus.map((menu) => ({
+          name: menu.name,
+          price: menu.price,
+          // 다른 필요한 필드들
+        }))
+      );
+      formDataToSend.append("menuDtos", menuDtosJson);
+
+      // 메뉴 이미지 추가
+      menus.forEach((menu, index) => {
+        if (menu.image) {
+          formDataToSend.append("menuImages", menu.image);
+        }
+      });
 
       await storeApi.registerStore(formDataToSend);
       navigate("/");
@@ -211,23 +223,26 @@ const StoreRegister: React.FC = () => {
           </CheckboxGroup>
         </FormGroup>
 
-        <Button type="button" onClick={handleAddMenu}>
-          메뉴 추가
-        </Button>
-        {menus.map((menu, index) => (
-          <MenuInput
-            key={index}
-            index={index}
-            menu={menu}
-            onChange={handleMenuChange}
-          />
-        ))}
+        <ButtonBox>
+          {menus.map((menu, index) => (
+            <MenuInput
+              key={index}
+              index={index}
+              menu={menu}
+              onChange={handleMenuChange}
+            />
+          ))}
+
+          <Button type="button" onClick={handleAddMenu}>
+            메뉴 추가
+          </Button>
+
+          <Button type="submit" disabled={loading}>
+            {loading ? "등록 중..." : "상점 등록"}
+          </Button>
+        </ButtonBox>
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
-
-        <Button type="submit" disabled={loading}>
-          {loading ? "등록 중..." : "상점 등록"}
-        </Button>
       </Form>
     </Container>
   );
@@ -343,4 +358,10 @@ const ErrorMessage = styled.div`
   color: #dc3545;
   margin-bottom: 1rem;
   text-align: center;
+`;
+
+const ButtonBox = styled.div`
+  display: flex;
+  flex-direction: column; // 버튼을 세로로 배치
+  gap: 16px; // 버튼 간 간격
 `;
