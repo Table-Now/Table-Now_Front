@@ -9,7 +9,9 @@ const TabContainer = styled.div`
   overflow: hidden;
 `;
 
-const TabButton = styled.button<{ active: boolean }>`
+const TabButton = styled.button.withConfig({
+  shouldForwardProp: (prop) => prop !== "active", // active는 DOM으로 전달되지 않음
+})<{ active: boolean }>`
   flex: 1;
   padding: 15px 0;
   border: none;
@@ -34,7 +36,7 @@ const TabButton = styled.button<{ active: boolean }>`
       left: 0;
       width: 100%;
       height: 3px;
-      background-color: #8d8d8d;|
+      background-color: #8d8d8d;
     }
   `}
 `;

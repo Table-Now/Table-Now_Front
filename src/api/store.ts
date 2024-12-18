@@ -37,7 +37,6 @@ export const storeApi = {
   },
 
   getStoreDetail: async (id: number) => {
-    console.log(id);
     const response = await instance.get(`store/stores/${id}`, {
       headers: getAuthHeader(),
     });
@@ -68,5 +67,3 @@ export const managerStoreApi = {
     return response.data;
   },
 };
-
-export const menuApi = {};
