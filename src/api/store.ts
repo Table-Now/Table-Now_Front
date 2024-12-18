@@ -27,7 +27,7 @@ export const storeApi = {
   },
 
   registerStore: async (formData: FormData) => {
-    const response = await instance.post(`store/register`, formData, {
+    const response = await instance.post(`store/stores`, formData, {
       headers: {
         ...getAuthHeader(),
         "Content-Type": "multipart/form-data",
@@ -37,8 +37,9 @@ export const storeApi = {
   },
 
   getStoreDetail: async (id: number) => {
-    const response = await instance.get(`store/detail`, {
-      params: { id },
+    console.log(id);
+    const response = await instance.get(`store/stores/${id}`, {
+      headers: getAuthHeader(),
     });
 
     return response.data;
@@ -53,8 +54,7 @@ export const storeApi = {
   },
 
   deleteStore: async (id: number) => {
-    const response = await instance.delete(`store/delete`, {
-      params: { id },
+    const response = await instance.delete(`store/stores/${id}`, {
       headers: getAuthHeader(),
     });
     return response.data;

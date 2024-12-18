@@ -99,7 +99,11 @@ const Mypage: React.FC = () => {
       </UserInfoSection>
 
       <ButtonBox>
-        {role === "MANAGER" && <Button to="/storeregister">상점 등록</Button>}
+        {role === "MANAGER" && (
+          <Button type="button" onClick={() => navigate("/storeregister")}>
+            상점 등록
+          </Button>
+        )}
 
         {role === "USER" && (
           <>
@@ -147,7 +151,7 @@ const Mypage: React.FC = () => {
               type="tel"
               placeholder="전화번호"
               value={phoneUpdate.phone}
-              onChange={(e) =>
+              onChange={(e: any) =>
                 setPhoneUpdate({
                   ...phoneUpdate,
                   phone: e.target.value,

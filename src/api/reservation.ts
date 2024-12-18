@@ -15,7 +15,7 @@ const getAuthHeader = () => {
 export const reservationApi = {
   register: async (data: ReservationRequest): Promise<ReservationResponse> => {
     const response = await instance.post<ReservationResponse>(
-      `reservation/request`,
+      `reservations`,
       data,
       { headers: getAuthHeader() }
     );
@@ -24,7 +24,7 @@ export const reservationApi = {
 
   reservationCheck: async (data: ReservationCheck): Promise<boolean> => {
     const response = await instance.get<boolean>(
-      `reservation/myrelist?user=${data.user}&id=${data.id}`,
+      `reservations/${data.id}/check?user=${data.user}`,
       { headers: getAuthHeader() }
     );
     return response.data;
@@ -34,14 +34,14 @@ export const reservationApi = {
     user: string | null
   ): Promise<myReservationListTypes> => {
     const response = await instance.get<myReservationListTypes>(
-      `reservation/reserlist?user=${user}`,
+      `reservations/${user}/list`,
       { headers: getAuthHeader() }
     );
     return response.data;
   },
 
   myReservationCancel: async (store: string | undefined) => {
-    await instance.delete(`reservation/delete?store=${store}`, {
+    await instance.delete(`reservations/${store}`, {
       headers: getAuthHeader(),
     });
   },
@@ -49,7 +49,7 @@ export const reservationApi = {
   myReservationApproval: async (phone: string | undefined) => {
     try {
       const response = await instance.post(
-        `reservation/approval?phone=${phone}`,
+        `reservations/${phone}/approval`,
         null, // POST 요청에서 body를 전달하지 않는 경우 `null`을 사용할 수 있습니다
         { headers: getAuthHeader() } // headers는 세 번째 인자로 전달
       );
