@@ -1,20 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { menuApi } from "../../api/menu";
+import { useUser } from "../../hooks/useUser";
+import Button from "../Button";
+import { MenuItem, MenuProps } from "../../types/menu/Menu";
 
-// 메뉴 아이템 타입 정의
-interface MenuItem {
-  image: string;
-  name: string;
-  price: string;
-}
-
-// Props 타입 정의
-interface MenuProps {
-  store: number | undefined;
-}
-
-const Menu: React.FC<MenuProps> = ({ store }) => {
+const Menu: React.FC<MenuProps> = ({ store, detailUser }) => {
+  const { user } = useUser();
   const [menuList, setMenuList] = useState<MenuItem[]>([]);
 
   const fetchData = async () => {
@@ -22,7 +14,7 @@ const Menu: React.FC<MenuProps> = ({ store }) => {
       const response = await menuApi.getMenuList(store);
       setMenuList(response);
     } catch (err: any) {
-      alert(err.response?.data || "메뉴를 불러오는 데 실패했습니다.");
+      console.error(err.response.data?.message);
     }
   };
 
@@ -34,22 +26,37 @@ const Menu: React.FC<MenuProps> = ({ store }) => {
 
   return (
     <MenuContainer>
-      {menuList.map((menu, index) => (
-        <MenuCard key={index}>
-          <MenuDetails>
-            <MenuName>{menu.name}</MenuName>
-            <MenuPrice>{menu.price}원</MenuPrice>
-          </MenuDetails>
-          <MenuImage src={menu.image} alt={menu.name} />
-        </MenuCard>
-      ))}
+      {user === detailUser && (
+        <Button to="/manager/menu/update" customProp={store}>
+          메뉴 수정
+        </Button>
+      )}
+
+      {menuList.length === 0 ? (
+        <StTitle>메뉴를 추가해주세요</StTitle>
+      ) : (
+        menuList.map((menu, index) => (
+          <MenuCard key={index}>
+            <MenuDetails>
+              <MenuName>{menu.name}</MenuName>
+              <MenuPrice>{menu.price}원</MenuPrice>
+            </MenuDetails>
+            <MenuImage src={menu.image} alt={menu.name} />
+          </MenuCard>
+        ))
+      )}
     </MenuContainer>
   );
 };
 
 export default Menu;
 
-// Styled Components
+const StTitle = styled.div`
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+`;
+
 const MenuContainer = styled.div`
   display: flex;
   flex-direction: column;

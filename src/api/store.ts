@@ -37,16 +37,31 @@ export const storeApi = {
   },
 
   getStoreDetail: async (id: number) => {
-    const response = await instance.get(`store/stores/${id}`, {
-      headers: getAuthHeader(),
-    });
+    const response = await instance.get(`store/stores/${id}`, {});
 
     return response.data;
   },
 
-  updateStore: async (id: number, storeData: StoreDetailType) => {
-    const response = await instance.put(`store/stores/${id}`, storeData, {
-      headers: getAuthHeader(),
+  updateStore: async (
+    id: number,
+    storeData: StoreDetailType,
+    storeImg?: File | null
+  ) => {
+    const formData = new FormData();
+    formData.append(
+      "storeDto",
+      new Blob([JSON.stringify(storeData)], { type: "application/json" })
+    );
+
+    if (storeImg) {
+      formData.append("file", storeImg);
+    }
+
+    const response = await instance.put(`store/stores/${id}`, formData, {
+      headers: {
+        ...getAuthHeader(),
+        "Content-Type": "multipart/form-data",
+      },
     });
     return response.data;
   },

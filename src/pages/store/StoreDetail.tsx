@@ -254,7 +254,9 @@ const StoreDetail: React.FC = () => {
 
           {activeTab === "home" && <Home storeDetail={storeDetail} />}
 
-          {activeTab === "menu" && <Menu store={storeDetail.id} />}
+          {activeTab === "menu" && (
+            <Menu store={storeDetail.id} detailUser={storeDetail.user} />
+          )}
 
           {activeTab === "review" && (
             <Review

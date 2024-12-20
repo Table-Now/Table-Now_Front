@@ -20,6 +20,7 @@ import KakaoLogin from "../pages/user/KakaoLogin";
 import MyWishList from "../pages/wishlist/MyWishList";
 import ManagerReservationList from "../pages/reservation/ManagerReservationList";
 import ChatRoom from "../pages/chat/ChatRoom";
+import MenuUpdate from "../pages/store/menu/MenuUpdate";
 
 interface ProtectedRouteProps {
   element: JSX.Element;
@@ -90,6 +91,10 @@ const AppContent: React.FC = () => {
         <Route
           path="/manager/store/list/:store"
           element={<ProtectedRoute element={<ManagerReservationList />} />}
+        />
+        <Route
+          path="/manager/menu/update"
+          element={<ProtectedRoute element={<MenuUpdate />} />}
         />
         <Route path="/chat" element={<ChatRoom />} />
       </Routes>

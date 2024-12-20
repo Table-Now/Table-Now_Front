@@ -5,7 +5,6 @@ import ReviewList from "../../pages/review/ReviewList";
 
 const Review: React.FC<ReviewProps> = ({
   reviews,
-  onReviewDeleted,
   storeDetail,
   setReviews,
 }) => {

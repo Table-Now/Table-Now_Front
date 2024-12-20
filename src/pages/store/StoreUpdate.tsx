@@ -8,6 +8,7 @@ import Button from "../../components/Button";
 const StoreUpdate: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [storeImg, setStoreImg] = useState<File | null>(null);
   const [storeData, setStoreData] = useState<StoreDetailType>({
     store: "",
     storeLocation: "",
@@ -55,10 +56,16 @@ const StoreUpdate: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await storeApi.updateStore(Number(id), storeData);
+      await storeApi.updateStore(Number(id), storeData, storeImg);
       navigate(`/store/${id}`);
     } catch (error) {
       console.error("Failed to update store:", error);
+      alert("매장 정보 업데이트에 실패했습니다.");
+    }
+  };
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setStoreImg(e.target.files[0]);
     }
   };
 
@@ -82,13 +89,19 @@ const StoreUpdate: React.FC = () => {
         onChange={handleChange}
       />
 
-      <Label>상점 이미지</Label>
-      <Input
-        type="text"
-        name="storeImg"
-        value={storeData.storeImg}
-        onChange={handleChange}
-      />
+      <FormGroup>
+        <Label>상점 이미지</Label>
+        <FileInput
+          type="file"
+          id="storeImg"
+          accept="image/*"
+          onChange={handleImageChange}
+        />
+        <FileInputLabel htmlFor="storeImg">
+          {storeImg ? "파일 선택됨" : "파일 선택하기"}
+        </FileInputLabel>
+        {storeImg && <FileName>{storeImg.name}</FileName>}
+      </FormGroup>
 
       <Label>상점 소개</Label>
       <Textarea
@@ -233,4 +246,28 @@ const CheckboxLabel = styled.label`
 
 const CheckboxInput = styled.input`
   cursor: pointer;
+`;
+
+const FileInput = styled.input`
+  display: none;
+`;
+
+const FileInputLabel = styled.label`
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #ff5733;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #ff3508;
+  }
+`;
+
+const FileName = styled.span`
+  margin-left: 10px;
+  font-size: 0.9rem;
+  color: #666;
 `;

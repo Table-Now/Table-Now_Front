@@ -8,6 +8,7 @@ interface ButtonProps {
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
   onClick?: () => void;
+  customProp?: string | number;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -16,10 +17,11 @@ const Button: React.FC<ButtonProps> = ({
   type,
   disabled,
   onClick,
+  customProp,
 }) => {
   if (to) {
     return (
-      <StyledLink to={to} disabled={disabled}>
+      <StyledLink to={to} disabled={disabled} state={{ customProp }}>
         {children}
       </StyledLink>
     );
@@ -50,7 +52,7 @@ const StyledButton = styled.button<{ disabled?: boolean }>`
   }
 `;
 
-const StyledLink = styled(Link)<{ disabled?: boolean }>`
+const StyledLink = styled(Link)<{ disabled?: boolean; $customProp?: string }>`
   padding: 0.5rem 1rem;
   background-color: ${(props) =>
     props.disabled ? "#d1d5db" : "#ff5733"}; /* Coral red */
