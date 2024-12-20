@@ -70,4 +70,15 @@ export const menuApi = {
 
     return response.data;
   },
+
+  reStatus: async (menuId: number | undefined) => {
+    const response = await instance.put(
+      `menus/${menuId}/restatus`,
+      {},
+      {
+        headers: getAuthHeader(),
+      }
+    );
+    return response.data;
+  },
 };

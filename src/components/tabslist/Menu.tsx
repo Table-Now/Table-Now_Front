@@ -41,7 +41,7 @@ const Menu: React.FC<MenuProps> = ({ store, detailUser }) => {
               <MenuName>{menu.name}</MenuName>
               <MenuPrice>{menu.price}원</MenuPrice>
             </MenuDetails>
-            <MenuImage src={menu.image} alt={menu.name} />
+            <MenuImage src={menu.image || "/img/noimage.jpg"} alt={menu.name} />
           </MenuCard>
         ))
       )}

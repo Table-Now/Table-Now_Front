@@ -101,6 +101,7 @@ const MenuUpdateModal: React.FC<MenuUpdateModalProps> = ({
             <Button type="button" onClick={onClose}>
               취소
             </Button>
+            <Button>매진</Button>
           </ButtonContainer>
         </Form>
       </ModalContent>

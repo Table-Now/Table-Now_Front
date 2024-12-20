@@ -6,15 +6,12 @@ import { menuApi } from "../../../api/menu";
 import Button from "../../../components/Button";
 import MenuUpdateModal from "../../../components/modal/MenuUpdateModal";
 import MenuAddModal from "../../../components/modal/MenuAddModal";
-
 const MenuUpdate = () => {
   const location = useLocation();
   const store = location.state?.customProp;
 
   const [menuList, setMenuList] = useState<MenuItem[]>([]);
-
   const [selectedMenu, setSelectedMenu] = useState<MenuItem | null>(null);
-
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const fetchData = async () => {
@@ -91,6 +88,17 @@ const MenuUpdate = () => {
     }
   };
 
+  const handleReStatus = async (menuId: number | undefined) => {
+    try {
+      await menuApi.reStatus(menuId);
+      await fetchData();
+      alert("메뉴가 매진되었습니다.");
+    } catch (error) {
+      console.error("매진 처리 실패:", error);
+      alert("매진 처리에 실패했습니다.");
+    }
+  };
+
   return (
     <>
       <MenuList>
@@ -106,6 +114,8 @@ const MenuUpdate = () => {
             <ButtonBox>
               <Button onClick={() => handleDelete(menu.id)}>삭제</Button>
               <Button onClick={() => handleUpdateClick(menu)}>수정</Button>
+              <Button onClick={() => handleReStatus(menu.id)}>매진</Button>{" "}
+              {/* 매진 버튼 추가 */}
             </ButtonBox>
           </MenuItemRow>
         ))}

@@ -32,7 +32,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
       setSecretReview(false);
       onReviewSubmitted(newReview);
     } catch (err: any) {
-      alert(err.response?.data?.message);
+      console.error(err.response?.data?.message);
     }
   };
 

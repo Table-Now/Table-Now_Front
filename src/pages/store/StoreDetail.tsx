@@ -73,7 +73,7 @@ const StoreDetail: React.FC = () => {
         const data = await reviewApi.getReview(storeDetail.store);
         setReviews(data);
       } catch (error: any) {
-        alert(error.response?.data);
+        console.error(error.response?.data);
       }
     }
   }, [storeDetail?.store]);
