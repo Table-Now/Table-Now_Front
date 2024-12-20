@@ -32,9 +32,9 @@ const FixedHeader = styled.footer`
   position: fixed;
   bottom: 0;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-51.2%);
   width: 100%;
-  max-width: 768px;
+  max-width: 730px;
   background-color: #f8f8f8;
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
   z-index: 1000;

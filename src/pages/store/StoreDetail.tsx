@@ -307,6 +307,7 @@ const ButtonBox2 = styled.div`
   display: flex;
   gap: 10px;
 `;
+
 const DetailContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -316,7 +317,7 @@ const DetailContainer = styled.div`
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 12px;
-  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.4);
   position: relative;
 `;
 

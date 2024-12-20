@@ -36,10 +36,11 @@ const Menu: React.FC<MenuProps> = ({ store, detailUser }) => {
         <StTitle>메뉴를 추가해주세요</StTitle>
       ) : (
         menuList.map((menu, index) => (
-          <MenuCard key={index}>
+          <MenuCard key={index} isSoldOut={menu.status === "STOP"}>
             <MenuDetails>
               <MenuName>{menu.name}</MenuName>
               <MenuPrice>{menu.price}원</MenuPrice>
+              {menu.status === "STOP" && <SoldOutText>매진</SoldOutText>}
             </MenuDetails>
             <MenuImage src={menu.image || "/img/noimage.jpg"} alt={menu.name} />
           </MenuCard>
@@ -64,7 +65,7 @@ const MenuContainer = styled.div`
   padding: 20px;
 `;
 
-const MenuCard = styled.div`
+const MenuCard = styled.div<{ isSoldOut: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -73,6 +74,13 @@ const MenuCard = styled.div`
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   padding: 16px;
+  position: relative;
+  ${(props) =>
+    props.isSoldOut &&
+    `
+    opacity: 0.5; /* 투명도 주기 */
+    pointer-events: none; /* 클릭 비활성화 */
+  `}
 `;
 
 const MenuDetails = styled.div`
@@ -101,4 +109,13 @@ const MenuImage = styled.img`
   height: 100px;
   border-radius: 8px;
   object-fit: cover;
+`;
+
+const SoldOutText = styled.div`
+  font-size: 16px;
+  color: #ff4747;
+  font-weight: bold;
+  position: absolute;
+  top: 16px;
+  right: 16px;
 `;
