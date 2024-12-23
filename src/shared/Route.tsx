@@ -21,6 +21,8 @@ import MyWishList from "../pages/wishlist/MyWishList";
 import ManagerReservationList from "../pages/reservation/ManagerReservationList";
 import ChatRoom from "../pages/chat/ChatRoom";
 import MenuUpdate from "../pages/store/menu/MenuUpdate";
+import MenuDetail from "../pages/store/menu/MenuDetail";
+import CartList from "../pages/cart/CartList";
 
 interface ProtectedRouteProps {
   element: JSX.Element;
@@ -34,12 +36,13 @@ const AppContent: React.FC = () => {
     "/auth",
     "/storeregister",
     "/store/:id",
+    "/menu/:menuId",
   ];
 
   const showHeader = !hideHeaderRoutes.some((route) => {
     if (route.includes(":")) {
       // 동적 라우트를 정규식으로 변환하여 일치 검사
-      const dynamicRoute = new RegExp(`^${route.replace(":id", "[^/]+")}$`);
+      const dynamicRoute = new RegExp(`^${route.replace(/:\w+/, "[^/]+")}$`);
       return dynamicRoute.test(location.pathname);
     }
     return route === location.pathname;
@@ -95,6 +98,14 @@ const AppContent: React.FC = () => {
         <Route
           path="/manager/menu/update"
           element={<ProtectedRoute element={<MenuUpdate />} />}
+        />
+        <Route
+          path="/menu/:menuId"
+          element={<ProtectedRoute element={<MenuDetail />} />}
+        />
+        <Route
+          path="/cart/list"
+          element={<ProtectedRoute element={<CartList />} />}
         />
         <Route path="/chat" element={<ChatRoom />} />
       </Routes>

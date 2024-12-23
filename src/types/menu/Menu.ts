@@ -17,3 +17,11 @@ export interface MenuUpdateProps {
   price?: number | string;
   image?: string;
 }
+
+export interface MenuDetailProps {
+  id: number;
+  name: string;
+  image: string;
+  price: number;
+  status: string;
+}

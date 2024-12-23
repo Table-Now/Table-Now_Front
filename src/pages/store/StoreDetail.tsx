@@ -290,7 +290,10 @@ const StoreDetail: React.FC = () => {
         )}
       </DetailContainer>
 
-      <DetailFooter />
+      <DetailFooter
+
+      //  storeId={storeDetail.id}
+      />
     </>
   );
 };

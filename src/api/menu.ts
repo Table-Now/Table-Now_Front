@@ -81,4 +81,11 @@ export const menuApi = {
     );
     return response.data;
   },
+
+  detailMenu: async (menuId: number | undefined) => {
+    const response = await instance.get(`/menus/detail/${menuId}`, {
+      headers: getAuthHeader(),
+    });
+    return response.data;
+  },
 };

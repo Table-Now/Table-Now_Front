@@ -4,9 +4,11 @@ import { menuApi } from "../../api/menu";
 import { useUser } from "../../hooks/useUser";
 import Button from "../Button";
 import { MenuItem, MenuProps } from "../../types/menu/Menu";
+import { useNavigate } from "react-router-dom";
 
 const Menu: React.FC<MenuProps> = ({ store, detailUser }) => {
   const { user } = useUser();
+  const navigate = useNavigate();
   const [menuList, setMenuList] = useState<MenuItem[]>([]);
 
   const fetchData = async () => {
@@ -24,6 +26,13 @@ const Menu: React.FC<MenuProps> = ({ store, detailUser }) => {
     }
   }, [store]);
 
+  const handleMenuClick = (
+    menuId: number | undefined,
+    storeId: number | undefined
+  ) => {
+    navigate(`/menu/${menuId}`, { state: { storeId } });
+  };
+
   return (
     <MenuContainer>
       {user === detailUser && (
@@ -36,7 +45,11 @@ const Menu: React.FC<MenuProps> = ({ store, detailUser }) => {
         <StTitle>메뉴를 추가해주세요</StTitle>
       ) : (
         menuList.map((menu, index) => (
-          <MenuCard key={index} isSoldOut={menu.status === "STOP"}>
+          <MenuCard
+            key={index}
+            isSoldOut={menu.status === "STOP"}
+            onClick={() => handleMenuClick(menu.id, menu.storeId)}
+          >
             <MenuDetails>
               <MenuName>{menu.name}</MenuName>
               <MenuPrice>{menu.price}원</MenuPrice>

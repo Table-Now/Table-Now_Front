@@ -10,7 +10,6 @@ const Join: React.FC = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<RegisterFormData>({
     user: "",
-    name: "",
     password: "",
     email: "",
     phone: "",
@@ -68,15 +67,6 @@ const Join: React.FC = () => {
             name="user"
             label="아이디"
             value={formData.user}
-            onChange={handleChange}
-            required
-          />
-          <Input
-            type="text"
-            id="name"
-            name="name"
-            label="이름"
-            value={formData.name}
             onChange={handleChange}
             required
           />

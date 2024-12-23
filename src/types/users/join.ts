@@ -1,6 +1,5 @@
 export interface RegisterFormData {
   user: string;
-  name: string;
   password: string;
   email: string;
   phone: string;
@@ -8,7 +7,6 @@ export interface RegisterFormData {
 
 export interface RegisterResponse {
   user: string;
-  name: string;
   password: string;
   email: string;
   phone: string;

@@ -26,10 +26,7 @@ export const userApi = {
   },
 
   kakaoLogout: async (accessToken: string | null) => {
-    const response = await instance.post(
-      "kakao/logout",
-      { accessToken } // 바디에 accessToken을 넣어 보냄
-    );
+    const response = await instance.post("kakao/logout", { accessToken });
     return response.data;
   },
 
@@ -53,7 +50,7 @@ export const userApi = {
   },
 
   getMyInfo: async (user: string | null): Promise<MyInfoResponse> => {
-    const response = await instance.get<MyInfoResponse>(`kakao/info/${user}`, {
+    const response = await instance.get<MyInfoResponse>(`user/info/${user}`, {
       headers: getAuthHeader(),
     });
     return response.data;
