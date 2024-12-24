@@ -57,4 +57,23 @@ export const cartAPI = {
     });
     return response.data;
   },
+
+  createOrder: async (payload: OrderType): Promise<any> => {
+    const response = await instance.post("/api/v1/order/create", payload, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  },
+
+  payment: async (paymentId: number) => {
+    const response = await instance.get(`/v1/api/payment/${paymentId}`);
+    return response.data;
+  },
 };
+export interface OrderType {
+  user: string | null;
+  totalAmount: number;
+  payMethod: string;
+}

@@ -10,6 +10,7 @@ const Menu: React.FC<MenuProps> = ({ store, detailUser }) => {
   const { user } = useUser();
   const navigate = useNavigate();
   const [menuList, setMenuList] = useState<MenuItem[]>([]);
+  console.log(menuList);
 
   const fetchData = async () => {
     try {
@@ -26,11 +27,8 @@ const Menu: React.FC<MenuProps> = ({ store, detailUser }) => {
     }
   }, [store]);
 
-  const handleMenuClick = (
-    menuId: number | undefined,
-    storeId: number | undefined
-  ) => {
-    navigate(`/menu/${menuId}`, { state: { storeId } });
+  const handleMenuClick = (menuId: number | undefined) => {
+    navigate(`/menu/${menuId}`, { state: { store } });
   };
 
   return (
@@ -48,7 +46,7 @@ const Menu: React.FC<MenuProps> = ({ store, detailUser }) => {
           <MenuCard
             key={index}
             isSoldOut={menu.status === "STOP"}
-            onClick={() => handleMenuClick(menu.id, menu.storeId)}
+            onClick={() => handleMenuClick(menu.id)}
           >
             <MenuDetails>
               <MenuName>{menu.name}</MenuName>

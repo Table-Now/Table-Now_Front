@@ -39,9 +39,10 @@ const Header: React.FC = () => {
             </>
           ) : (
             <>
-              <a href={KAKAO_AUTH_URL}>
+              {/* <a href={KAKAO_AUTH_URL}>
                 <StImg src="/img/kakaoLoginImg.png" alt="kakao_login" />
-              </a>
+              </a> */}
+              <Button to="/login">로그인</Button>
             </>
           )}
         </RightSection>

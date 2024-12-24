@@ -4,12 +4,12 @@ export interface MenuItem {
   name?: string;
   price?: string;
   status?: string;
-  storeId?: number;
+  store?: number;
 }
 
 export interface MenuProps {
-  store: number | undefined;
-  detailUser: string | undefined;
+  store?: number | undefined;
+  detailUser?: string | undefined;
 }
 
 export interface MenuUpdateProps {

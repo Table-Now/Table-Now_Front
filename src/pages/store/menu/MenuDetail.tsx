@@ -3,10 +3,10 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { menuApi } from "../../../api/menu";
 import { cartAPI } from "../../../api/cart"; // cartAPI import
-import { MenuDetailProps } from "../../../types/menu/Menu";
+import { MenuDetailProps, MenuProps } from "../../../types/menu/Menu";
 import { useUser } from "../../../hooks/useUser";
 
-const MenuDetail: React.FC = () => {
+const MenuDetail: React.FC<MenuProps> = ({ store }) => {
   const { user } = useUser();
   const { menuId } = useParams();
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ const MenuDetail: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { storeId } = location.state || {};
+  const storeId = location.state?.store;
 
   useEffect(() => {
     const fetchMenuDetail = async () => {
@@ -46,28 +46,38 @@ const MenuDetail: React.FC = () => {
   const handleAddToCart = async () => {
     if (!storeId || !menuDetail) {
       setError("장바구니에 추가할 메뉴 정보가 잘못되었습니다.");
+      // console.log("Error: storeId or menuDetail is missing");
       return;
     }
 
     setLoading(true);
     setError(null);
 
+    // 디버깅: cartDto가 제대로 생성되는지 확인
+    const cartDto = {
+      menuId: Number(menuId),
+      storeId: storeId,
+      totalCount: quantity,
+      userId: user,
+    };
+
+    // console.log("cartDto:", cartDto); // cartDto를 출력하여 값 확인
+
     try {
-      const cartDto = {
-        menuId: Number(menuId),
-        storeId: storeId,
-        totalCount: quantity,
-        userId: user,
-      };
+      // 디버깅: 요청 전 상태 출력
+      // console.log("Sending request to add to cart...");
 
       const response = await cartAPI.addCart(storeId, cartDto);
 
+      // 디버깅: 응답 상태 확인
+      // console.log("Response from API:", response);
+
       if (response) {
         alert("장바구니에 추가되었습니다!");
-        navigate(-1);
+        navigate(-1); // 장바구니 추가 후 이전 페이지로 이동
       }
     } catch (err: any) {
-      console.error(err);
+      console.error("카트 추가 실패:", err); // 에러를 콘솔에 출력
       setError("장바구니에 추가하는 중 문제가 발생했습니다.");
     } finally {
       setLoading(false); // 로딩 종료

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { cartAPI } from "../../api/cart";
+import { cartAPI, OrderType } from "../../api/cart";
 import styled from "styled-components";
 import { useUser } from "../../hooks/useUser";
 import Button from "../../components/Button";
@@ -17,7 +17,6 @@ const CartListContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #f5f5f5;
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -113,7 +112,6 @@ const CartList: React.FC = () => {
   // 서버에 수정된 카트 항목을 보냄
   const handleUpdateCart = async (index: number) => {
     const cartItem = cartItems[index];
-
     try {
       // CartDto 객체 생성
       const cartDto = {
@@ -131,6 +129,81 @@ const CartList: React.FC = () => {
     } catch (error) {
       console.error("카트 수정 중 오류 발생", error);
       setError("카트 수정 중 오류가 발생했습니다.");
+    }
+  };
+
+  // useEffect(() => {
+  //   const loadScript = (src: string) => {
+  //     return new Promise<void>((resolve, reject) => {
+  //       const script = document.createElement("script");
+  //       script.src = src;
+  //       script.onload = () => resolve();
+  //       script.onerror = (error) => reject(error);
+  //       document.body.appendChild(script);
+  //     });
+  //   };
+
+  //   const loadScripts = async () => {
+  //     try {
+  //       await loadScript("https://code.jquery.com/jquery-3.6.0.min.js");
+  //       await loadScript("https://cdn.iamport.kr/js/iamport.payment-1.1.8.js");
+  //     } catch (error) {
+  //       console.error("스크립트 로딩 중 오류 발생", error);
+  //     }
+  //   };
+
+  //   loadScripts();
+  // }, []);
+
+  // const handleCheckout = async () => {
+  //   if (!user || cartItems.length === 0) {
+  //     setError("로그인 후 결제 가능합니다.");
+  //     return;
+  //   }
+
+  //   if (window.IMP) {
+  //     const IMP = window.IMP;
+  //     // 이제 IMP를 사용할 수 있습니다
+
+  //     IMP.init("imp62440604");
+
+  //     const paymentData = {
+  //       pg: "html5_inicis",
+  //       pay_method: "card",
+  //       merchant_uid: `order_${new Date().getTime()}`,
+  //       name: "장바구니 결제",
+  //       amount: 1000,
+  //       buyer_email: "jominuk1025@naver.com",
+  //       buyer_name: "조민욱",
+  //       buyer_tel: "01033612489",
+  //       buyer_postcode: "123-456",
+  //     };
+
+  //     IMP.request_pay(paymentData, function (response: any) {
+  //       if (response.success) {
+  //         console.log(response);
+  //         alert("결제가 완료되었습니다.");
+  //       } else {
+  //         alert(`${response.error_msg}`);
+  //       }
+  //     });
+  //   } else {
+  //     setError("결제 서비스가 제대로 로드되지 않았습니다.");
+  //   }
+  // };
+
+  const handleCheckout = async () => {
+    const payload: OrderType = {
+      user: user,
+      totalAmount: cartItems[0].totalAmount,
+      payMethod: "card",
+    };
+
+    try {
+      const response = await cartAPI.createOrder(payload);
+    } catch (error: any) {
+      console.error(error);
+      alert(error.response.data?.message);
     }
   };
 
@@ -169,6 +242,7 @@ const CartList: React.FC = () => {
           </CartItemContainer>
         ))
       )}
+      <Button onClick={handleCheckout}>결제하기</Button>
     </CartListContainer>
   );
 };
