@@ -45,14 +45,6 @@ const MessageInput = styled.input`
   margin-bottom: 10px;
 `;
 
-const SendButton = styled.button`
-  width: 100%;
-  padding: 10px;
-  background-color: #ff5733;
-  border: none;
-  border-radius: 4px;
-`;
-
 const ChatRoom: React.FC = () => {
   const { user } = useUser();
   const [messages, setMessages] = useState<ChatMessage[]>([]);

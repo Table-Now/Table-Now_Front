@@ -69,7 +69,7 @@ const CartList: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  console.log(cartItems);
+
   const fetchCartItems = async () => {
     try {
       const data = await cartAPI.getCart(user);
@@ -109,7 +109,6 @@ const CartList: React.FC = () => {
     }
   };
 
-  // 서버에 수정된 카트 항목을 보냄
   const handleUpdateCart = async (index: number) => {
     const cartItem = cartItems[index];
     try {
@@ -123,7 +122,6 @@ const CartList: React.FC = () => {
         totalAmount: cartItem.totalAmount,
       };
 
-      // 서버에 업데이트 요청 보내기
       await cartAPI.updateCart(user, cartDto);
       fetchCartItems(); // 업데이트 후 카트 아이템 다시 가져오기
     } catch (error) {
@@ -194,7 +192,7 @@ const CartList: React.FC = () => {
 
   const handleCheckout = async () => {
     if (cartItems.length === 0) {
-      setError("장바구니가 비어있습니다.");
+      alert("장바구니가 비어있습니다.");
       return;
     }
 

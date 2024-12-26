@@ -6,20 +6,16 @@ import Button from "./Button";
 
 interface DetailFooterProps {
   isReserved: boolean;
-  isConfirmed: boolean;
   handleReservationAction: () => void;
   handleReservationApproval: () => void;
-  handleReservationCancel: () => void;
   handleLikeToggle: () => void;
   isLiked: boolean;
 }
 
 const DetailFooter: React.FC<DetailFooterProps> = ({
   isReserved,
-  isConfirmed,
   handleReservationAction,
   handleReservationApproval,
-  handleReservationCancel,
   handleLikeToggle,
   isLiked,
 }) => {
@@ -33,7 +29,7 @@ const DetailFooter: React.FC<DetailFooterProps> = ({
           {sessionStorage.getItem("token") &&
             (role === "USER" || role == null) && (
               <>
-                {!isReserved && !isConfirmed && (
+                {!isReserved && (
                   <FullWidthButtonWrapper>
                     <Button onClick={handleReservationAction}>
                       원격줄서기
@@ -41,7 +37,7 @@ const DetailFooter: React.FC<DetailFooterProps> = ({
                   </FullWidthButtonWrapper>
                 )}
 
-                {isReserved && !isConfirmed && (
+                {isReserved && (
                   <FullWidthButtonWrapper>
                     <Button onClick={handleReservationApproval}>
                       확정하기
@@ -49,21 +45,16 @@ const DetailFooter: React.FC<DetailFooterProps> = ({
                   </FullWidthButtonWrapper>
                 )}
 
-                {isConfirmed && (
-                  <FullWidthButtonWrapper>
-                    <Button onClick={handleReservationCancel}>예약 취소</Button>
-                  </FullWidthButtonWrapper>
-                )}
+                <FullWidthButtonWrapper>
+                  <Button onClick={() => navigate("/cart/list")}>
+                    포장하기
+                  </Button>
+                </FullWidthButtonWrapper>
               </>
             )}
         </LeftSection>
 
         <RightSection>
-          {/* <StImg
-            src="/img/bookmark.png"
-            alt="즐겨찾기"
-            onClick={() => navigate("/cart/list")}
-          /> */}
           {sessionStorage.getItem("token") && role === "USER" && (
             <LikeButton onClick={handleLikeToggle}>
               <LikeIcon
@@ -110,11 +101,6 @@ const LeftSection = styled.div`
 const RightSection = styled.div`
   display: flex;
   justify-content: flex-end;
-`;
-
-const StImg = styled.img`
-  width: 40px;
-  height: 40px;
 `;
 
 const FullWidthButtonWrapper = styled.div`

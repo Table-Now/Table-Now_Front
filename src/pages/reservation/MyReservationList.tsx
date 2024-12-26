@@ -4,6 +4,7 @@ import { myReservationListTypes } from "../../types/reservation/myList";
 import { reservationApi } from "../../api/reservation";
 import { useUser } from "../../hooks/useUser";
 import { useNavigate } from "react-router-dom";
+import Button from "../../components/Button";
 
 const MyReservationList: React.FC = () => {
   const navigate = useNavigate();
@@ -52,6 +53,16 @@ const MyReservationList: React.FC = () => {
     navigate(`/store/${id}`);
   };
 
+  const handleReservationCancel = async (store: string | undefined) => {
+    try {
+      await reservationApi.myReservationCancel(store);
+      alert("예약이 취소되었습니다.");
+      window.location.reload();
+    } catch (err: any) {
+      alert(err.response?.data?.message);
+    }
+  };
+
   return (
     <Container>
       <Title>나의 예약 내역</Title>
@@ -76,7 +87,19 @@ const MyReservationList: React.FC = () => {
                   <Label>연락처</Label>
                   <Value>{reservation.phone}</Value>
                 </InfoItem>
+                <InfoItem>
+                  <Label>대기번호</Label>
+                  <Value>{reservation.waitingNumber}</Value>
+                </InfoItem>
               </ReservationInfo>
+
+              <FullWidthButtonWrapper>
+                <Button
+                  onClick={() => handleReservationCancel(reservation.store)}
+                >
+                  예약 취소
+                </Button>
+              </FullWidthButtonWrapper>
             </ReservationCard>
           ))}
         </ReservationGrid>
@@ -152,17 +175,6 @@ const StoreName = styled.h2`
   font-weight: 600;
 `;
 
-const StatusBadge = styled.span<{ $status: string }>`
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  background-color: ${({ $status }) =>
-    $status === "REQ" ? "#e3f2fd" : $status === "ING" ? "#dcedc8" : "#ffebee"};
-  color: ${({ $status }) =>
-    $status === "REQ" ? "#1976d2" : $status === "ING" ? "#388e3c" : "#d32f2f"};
-`;
-
 const ReservationInfo = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -197,4 +209,11 @@ const NoReservations = styled.div`
   max-width: 500px;
 `;
 
+const FullWidthButtonWrapper = styled.div`
+  margin-top: 10px;
+  width: 100%;
+  button {
+    width: 100%;
+  }
+`;
 export default MyReservationList;

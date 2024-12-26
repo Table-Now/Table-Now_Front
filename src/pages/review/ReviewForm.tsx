@@ -48,20 +48,25 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
         placeholder="리뷰 내용을 입력하세요."
       />
 
-      {/* 비밀리뷰 체크박스 */}
-      <Label>
-        <input
-          type="checkbox"
-          checked={secretReview}
-          onChange={handleSecretReviewChange}
-        />
-        비밀 리뷰로 작성
-      </Label>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <Label>
+          <input
+            type="checkbox"
+            checked={secretReview}
+            onChange={handleSecretReviewChange}
+            style={{ marginRight: "5px" }}
+          />
+          비밀 리뷰로 작성
+        </Label>
 
-      {/* 비밀리뷰일 경우 비밀번호 입력란 */}
+        <Button type="button" onClick={handleReviewSubmit}>
+          등록하기
+        </Button>
+      </div>
+
       {secretReview && (
         <PasswordInput
-          type="text" // 숫자만 허용하지만 type="password" 대신 text를 사용하여 필터링 구현
+          type="text"
           value={password}
           onChange={(e) => {
             const input = e.target.value;
@@ -73,7 +78,6 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
         />
       )}
 
-      <Button onClick={handleReviewSubmit}>등록하기</Button>
       {error && <ErrorMessage>{error}</ErrorMessage>}
     </FormContainer>
   );
@@ -91,14 +95,6 @@ const FormContainer = styled.div`
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-`;
-
-const Title = styled.h3`
-  font-size: 22px;
-  font-weight: bold;
-  color: #222;
-  margin-bottom: 16px;
-  text-align: center;
 `;
 
 const Textarea = styled.textarea`

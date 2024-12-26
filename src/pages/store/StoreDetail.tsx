@@ -21,11 +21,10 @@ import DetailFooter from "../../components/DetailFooter";
 const StoreDetail: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { user, role } = useUser();
+  const { user } = useUser();
   const [storeDetail, setStoreDetail] = useState<StoreDetailType | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isReserved, setIsReserved] = useState<boolean>(false);
-  const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
   const [isLiked, setIsLiked] = useState<boolean>(false);
 
   const [activeTab, setActiveTab] = useState("home");
@@ -146,20 +145,8 @@ const StoreDetail: React.FC = () => {
     try {
       const response = await reservationApi.myReservationApproval(phone.phone);
       if (response && response.message) {
-        setIsConfirmed(true);
         alert(response.message);
       }
-    } catch (err: any) {
-      alert(err.response?.data?.message);
-    }
-  };
-
-  const handleReservationCancel = async () => {
-    try {
-      await reservationApi.myReservationCancel(storeDetail?.store);
-      setIsConfirmed(false);
-      alert("예약이 취소되었습니다.");
-      window.location.reload();
     } catch (err: any) {
       alert(err.response?.data?.message);
     }
@@ -283,9 +270,7 @@ const StoreDetail: React.FC = () => {
 
       <DetailFooter
         isReserved={isReserved}
-        isConfirmed={isConfirmed}
         handleReservationAction={handleReservationAction}
-        handleReservationCancel={handleReservationCancel}
         handleReservationApproval={handleReservationApproval}
         handleLikeToggle={handleLikeToggle}
         isLiked={isLiked}
