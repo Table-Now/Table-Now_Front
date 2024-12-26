@@ -25,6 +25,7 @@ const StoreDetail: React.FC = () => {
   const [storeDetail, setStoreDetail] = useState<StoreDetailType | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isReserved, setIsReserved] = useState<boolean>(false);
+  const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
   const [isLiked, setIsLiked] = useState<boolean>(false);
 
   const [activeTab, setActiveTab] = useState("home");
@@ -130,6 +131,7 @@ const StoreDetail: React.FC = () => {
       prevReviews.filter((review) => review.id !== deletedReviewId)
     );
   };
+
   const handleLikeToggle = async () => {
     try {
       await wishlistApi.toggleLike(user, storeDetail.store);
@@ -139,23 +141,25 @@ const StoreDetail: React.FC = () => {
     }
   };
 
-  const handleReservationCancel = async () => {
-    try {
-      await reservationApi.myReservationCancel(storeDetail?.store);
-      alert("예약이 취소되었습니다.");
-      window.location.reload();
-    } catch (err: any) {
-      alert(err.response?.data?.message);
-    }
-  };
-
   const handleReservationApproval = async () => {
     const phone = await userApi.getMyInfo(user);
     try {
       const response = await reservationApi.myReservationApproval(phone.phone);
       if (response && response.message) {
+        setIsConfirmed(true);
         alert(response.message);
       }
+    } catch (err: any) {
+      alert(err.response?.data?.message);
+    }
+  };
+
+  const handleReservationCancel = async () => {
+    try {
+      await reservationApi.myReservationCancel(storeDetail?.store);
+      setIsConfirmed(false);
+      alert("예약이 취소되었습니다.");
+      window.location.reload();
     } catch (err: any) {
       alert(err.response?.data?.message);
     }
@@ -171,22 +175,18 @@ const StoreDetail: React.FC = () => {
   );
   const isStoreWeekOff = isWeekOff(storeDetail?.storeWeekOff ?? "");
 
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
   return (
     <>
       <DetailContainer>
-        {sessionStorage.getItem("token") &&
-          (role === "USER" || role == null) && (
-            <ButtonBox>
-              <ReservationBtn>
-                <Button onClick={handleReservationAction}>
-                  {isReserved ? "대기중" : "원격줄서기"}
-                </Button>
-                <Button onClick={handleReservationApproval}>확정하기</Button>
-              </ReservationBtn>
-
-              <Button onClick={handleReservationCancel}>예약 취소</Button>
-            </ButtonBox>
-          )}
+        <BackButtonContainer>
+          <BackButton onClick={handleGoBack}>
+            <BackIcon src="/img/back.png" alt="뒤로가기" />
+          </BackButton>
+        </BackButtonContainer>
 
         <Image
           src={storeDetail.storeImg || "/img/noimage.jpg"}
@@ -194,18 +194,17 @@ const StoreDetail: React.FC = () => {
         />
 
         <InfoSection>
-          {sessionStorage.getItem("token") && role === "USER" && (
+          {/* {sessionStorage.getItem("token") && role === "USER" && (
             <LikeButton onClick={handleLikeToggle}>
               <LikeIcon
                 src={isLiked ? "/img/unlike.png" : "/img/like.png"}
                 alt="Like"
               />
             </LikeButton>
-          )}
+          )} */}
           <Title>{storeDetail.store}</Title>
           <DetailRow>{storeDetail.storeLocation}</DetailRow>
-          <DetailRow>{storeDetail.rating ?? 0}</DetailRow>
-          <DetailRow>번호</DetailRow>
+          <DetailRow>{storeDetail.phone}</DetailRow>
           <DetailRow>
             {isStoreWeekOff ? (
               <span
@@ -291,14 +290,38 @@ const StoreDetail: React.FC = () => {
       </DetailContainer>
 
       <DetailFooter
-
-      //  storeId={storeDetail.id}
+        isReserved={isReserved}
+        isConfirmed={isConfirmed}
+        handleReservationAction={handleReservationAction}
+        handleReservationCancel={handleReservationCancel}
+        handleReservationApproval={handleReservationApproval}
+        handleLikeToggle={handleLikeToggle}
+        isLiked={isLiked}
       />
     </>
   );
 };
 
 export default StoreDetail;
+
+const BackButtonContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+`;
+
+const BackButton = styled.button`
+  background: none;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+`;
+
+const BackIcon = styled.img`
+  width: 30px;
+  height: 30px;
+`;
 
 const ButtonBox = styled.div`
   display: flex;
@@ -320,7 +343,6 @@ const DetailContainer = styled.div`
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 12px;
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.4);
   position: relative;
 `;
 
@@ -378,28 +400,4 @@ const LoadingMessage = styled.div`
   text-align: center;
   padding: 20px;
   color: #888;
-`;
-
-const LikeButton = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-
-  &:hover {
-    transform: scale(1.1);
-  }
-
-  &:focus {
-    outline: none;
-  }
-`;
-const LikeIcon = styled.img`
-  width: 50px;
-  height: 60px;
-`;
-
-const ReservationBtn = styled.div`
-  display: flex;
-  gap: 10px;
 `;

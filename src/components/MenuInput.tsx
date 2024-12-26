@@ -8,12 +8,14 @@ interface MenuInputProps {
     index: number,
     menu: { name: string; price: string; image: File | null }
   ) => void;
+  onRemove: (index: number) => void;
 }
 
 export const MenuInput: React.FC<MenuInputProps> = ({
   index,
   menu,
   onChange,
+  onRemove,
 }) => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -30,6 +32,10 @@ export const MenuInput: React.FC<MenuInputProps> = ({
 
   return (
     <MenuContainer>
+      <RemoveButton type="button" onClick={() => onRemove(index)}>
+        X
+      </RemoveButton>
+
       <FormGroup>
         <Label>메뉴 이름</Label>
         <Input
@@ -71,7 +77,6 @@ export const MenuInput: React.FC<MenuInputProps> = ({
   );
 };
 
-// 스타일 정리
 const MenuContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -81,6 +86,25 @@ const MenuContainer = styled.div`
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   background-color: #f9f9f9;
+  position: relative;
+`;
+
+const RemoveButton = styled.button`
+  background-color: #d6938c;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #c0392b;
+  }
 `;
 
 const FormGroup = styled.div`

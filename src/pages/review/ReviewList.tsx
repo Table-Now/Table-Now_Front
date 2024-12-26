@@ -52,7 +52,7 @@ const ReviewList: React.FC<ReviewListProps> = ({
   return (
     <ReviewListContainer>
       {reviews.length === 0 ? (
-        <NoReviews>아직 리뷰가 없습니다.</NoReviews>
+        <NoReviews>여러분의 소중한 리뷰를 남겨주세요!</NoReviews>
       ) : (
         reviews.map((review) => (
           <ReviewItem
@@ -112,7 +112,6 @@ const ReviewListContainer = styled.div`
 const NoReviews = styled.p`
   text-align: center;
   color: #666;
-  font-style: italic;
 `;
 
 const ReviewItem = styled.div<{ $secretReview: boolean }>`

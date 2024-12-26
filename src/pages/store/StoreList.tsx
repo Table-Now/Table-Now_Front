@@ -100,6 +100,20 @@ const StoreList: React.FC = () => {
 
   return (
     <>
+      {/* <StLocation>
+        <LocationStatus>
+          <div>내 위치 확인: </div>
+          <StatusLight
+            color={
+              locationStatus === "SUCCESS"
+                ? "성공"
+                : locationStatus === "ERROR"
+                ? "실패"
+                : "blue"
+            }
+          />
+        </LocationStatus>
+      </StLocation> */}
       <SearchSection>
         <SearchForm onSubmit={handleSearch}>
           <SearchInput

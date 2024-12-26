@@ -14,6 +14,7 @@ export interface StoreDetailType {
   latitude?: number;
   longitude?: number;
   distance?: number;
+  phone?: string;
 }
 
 interface StoreDetailData {

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import Button from "../components/Button";
-import { KAKAO_AUTH_URL } from "../pages/user/KakaoLogin";
 
 const Header: React.FC = () => {
   const [isLogin, setIsLogin] = useState<boolean>(false);
@@ -25,17 +24,24 @@ const Header: React.FC = () => {
     <FixedHeader>
       <HeaderContent>
         <LeftSection>
-          <Button to="/chat">Talk</Button>
+          <a href="/chat">
+            <StImg src="/img/talk.png" alt="Talk" />
+          </a>
         </LeftSection>
 
         <CenterSection>
-          <Logo to="/">TableNow</Logo>
+          {/* <Logo to="/">TableNow</Logo> */}
+          <a href="/">
+            <StImg src="/img/logo.png" alt="logo" />
+          </a>
         </CenterSection>
 
         <RightSection>
           {isLogin ? (
             <>
-              <Button to="/mypage">My</Button>
+              <a href="/mypage">
+                <StImg src="/img/my.png" alt="myPage" />
+              </a>
             </>
           ) : (
             <>
@@ -98,6 +104,6 @@ const Logo = styled(Link)`
 `;
 
 const StImg = styled.img`
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
 `;

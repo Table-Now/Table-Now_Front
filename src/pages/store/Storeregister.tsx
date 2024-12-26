@@ -13,6 +13,7 @@ const StoreRegister: React.FC = () => {
   const [formData, setFormData] = useState({
     user: "",
     store: "",
+    phone: "",
     storeLocation: "",
     storeImg: "",
     storeContents: "",
@@ -26,7 +27,11 @@ const StoreRegister: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const [menus, setMenus] = useState<
-    { name: string; price: string; image: File | null }[]
+    {
+      name: string;
+      price: string;
+      image: File | null;
+    }[]
   >([]);
 
   const handleChange = (
@@ -122,6 +127,10 @@ const StoreRegister: React.FC = () => {
     }
   };
 
+  const handleRemoveMenu = (index: number) => {
+    setMenus(menus.filter((_, i) => i !== index)); // Remove the menu at the specified index
+  };
+
   return (
     <Container>
       <Title>매장 등록</Title>
@@ -135,6 +144,18 @@ const StoreRegister: React.FC = () => {
             onChange={handleChange}
             required
             placeholder="상점 이름을 입력하세요"
+          />
+        </FormGroup>
+
+        <FormGroup>
+          <Label>매장 번호</Label>
+          <Input
+            type="text"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            required
+            placeholder="매장 번호를 입력해주세요 ex)010-1234-1234"
           />
         </FormGroup>
 
@@ -225,12 +246,14 @@ const StoreRegister: React.FC = () => {
 
         <ButtonBox>
           {menus.map((menu, index) => (
-            <MenuInput
-              key={index}
-              index={index}
-              menu={menu}
-              onChange={handleMenuChange}
-            />
+            <div key={index} style={{ marginBottom: "1rem" }}>
+              <MenuInput
+                index={index}
+                menu={menu}
+                onChange={handleMenuChange}
+                onRemove={handleRemoveMenu}
+              />
+            </div>
           ))}
 
           <Button type="button" onClick={handleAddMenu}>
