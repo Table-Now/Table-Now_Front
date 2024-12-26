@@ -11,6 +11,7 @@ const StoreUpdate: React.FC = () => {
   const [storeImg, setStoreImg] = useState<File | null>(null);
   const [storeData, setStoreData] = useState<StoreDetailType>({
     store: "",
+    phone: "",
     storeLocation: "",
     storeImg: "",
     storeContents: "",
@@ -78,6 +79,14 @@ const StoreUpdate: React.FC = () => {
         type="text"
         name="store"
         value={storeData.store}
+        onChange={handleChange}
+      />
+
+      <Label>매장 번호</Label>
+      <Input
+        type="text"
+        name="phone"
+        value={storeData.phone}
         onChange={handleChange}
       />
 

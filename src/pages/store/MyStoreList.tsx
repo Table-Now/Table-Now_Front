@@ -42,7 +42,6 @@ const MyStoreList: React.FC = () => {
             <StoreInfo>
               <StoreName>{store.store}</StoreName>
               <StoreLocation>{store.storeLocation}</StoreLocation>
-              <StoreRating>평점: {store.rating}</StoreRating>
               <StoreHours>
                 영업시간: {store.storeOpen} - {store.storeClose}
               </StoreHours>

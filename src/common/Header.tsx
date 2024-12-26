@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 
 const Header: React.FC = () => {
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState<boolean>(false);
 
   useEffect(() => {
@@ -20,11 +21,21 @@ const Header: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    const token = sessionStorage.getItem("token");
+
+    if (!token) {
+      alert("로그인을 진행해주세요");
+      navigate("/login");
+      e.preventDefault();
+    }
+  };
+
   return (
     <FixedHeader>
       <HeaderContent>
         <LeftSection>
-          <a href="/chat">
+          <a href="/chat" onClick={handleClick}>
             <StImg src="/img/talk.png" alt="Talk" />
           </a>
         </LeftSection>

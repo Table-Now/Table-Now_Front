@@ -194,14 +194,6 @@ const StoreDetail: React.FC = () => {
         />
 
         <InfoSection>
-          {/* {sessionStorage.getItem("token") && role === "USER" && (
-            <LikeButton onClick={handleLikeToggle}>
-              <LikeIcon
-                src={isLiked ? "/img/unlike.png" : "/img/like.png"}
-                alt="Like"
-              />
-            </LikeButton>
-          )} */}
           <Title>{storeDetail.store}</Title>
           <DetailRow>{storeDetail.storeLocation}</DetailRow>
           <DetailRow>{storeDetail.phone}</DetailRow>
