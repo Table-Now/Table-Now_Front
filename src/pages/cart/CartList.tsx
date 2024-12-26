@@ -69,7 +69,7 @@ const CartList: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  console.log(cartItems);
   const fetchCartItems = async () => {
     try {
       const data = await cartAPI.getCart(user);
@@ -193,10 +193,26 @@ const CartList: React.FC = () => {
   // };
 
   const handleCheckout = async () => {
+    if (cartItems.length === 0) {
+      setError("장바구니가 비어있습니다.");
+      return;
+    }
+
+    const orderDetails = cartItems.map((item) => ({
+      menuId: item.menuId,
+      menuCount: item.totalCount,
+      totalPrice: item.totalAmount,
+    }));
+
+    const totalAmount = cartItems.reduce(
+      (sum, item) => sum + item.totalAmount,
+      0
+    );
+
     const payload: OrderType = {
-      user: user,
-      totalAmount: cartItems[0].totalAmount,
+      totalAmount,
       payMethod: "card",
+      orderDetails,
     };
 
     try {

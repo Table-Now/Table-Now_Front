@@ -58,9 +58,10 @@ export const cartAPI = {
     return response.data;
   },
 
-  createOrder: async (payload: OrderType): Promise<any> => {
-    const response = await instance.post("/api/v1/order/create", payload, {
+  createOrder: async (payload: OrderType): Promise<OrderType> => {
+    const response = await instance.post("/order/create", payload, {
       headers: {
+        ...getAuthHeader(),
         "Content-Type": "application/json",
       },
     });
@@ -72,8 +73,16 @@ export const cartAPI = {
     return response.data;
   },
 };
+
 export interface OrderType {
-  user: string | null;
-  totalAmount: number;
-  payMethod: string;
+  totalAmount: number; // 총가격
+  payMethod: string; // 결제 방식
+  orderDetails: OrderDetailType[]; // 주문 상세 리스트
+}
+
+// Updated OrderDetailType interface
+export interface OrderDetailType {
+  menuId: number; // 메뉴 ID
+  menuCount: number; // 메뉴 수량
+  totalPrice: number; // 메뉴 총가격
 }
