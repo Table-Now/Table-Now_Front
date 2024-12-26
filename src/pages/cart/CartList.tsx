@@ -11,8 +11,19 @@ interface CartItem {
   storeId: number;
   totalCount: number;
   totalAmount: number;
+  menu: string;
+  image: string;
 }
 
+const StTitleBox = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const StImg = styled.img`
+  width: 80px;
+  height: 80px;
+  margin-right: 20px;
+`;
 const CartListContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -55,13 +66,20 @@ const ButtonBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 1rem;
 `;
 
 const QuantityBox = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+`;
+
+const Totalpayment = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 20px;
 `;
 
 const CartList: React.FC = () => {
@@ -221,6 +239,11 @@ const CartList: React.FC = () => {
     }
   };
 
+  const totalCartAmount = cartItems.reduce(
+    (sum, item) => sum + item.totalAmount,
+    0
+  );
+
   if (loading) {
     return <div>로딩 중...</div>;
   }
@@ -237,11 +260,14 @@ const CartList: React.FC = () => {
       ) : (
         cartItems.map((item, index) => (
           <CartItemContainer key={item.id}>
-            <div>
-              <ItemTitle>메뉴 ID: {item.menuId}</ItemTitle>
-              <ItemDetails>수량: {item.totalCount}</ItemDetails>
-              <TotalAmount>총액: {item.totalAmount}원</TotalAmount>
-            </div>
+            <StTitleBox>
+              <StImg src={item.image || "/img/noimage.jpg"} />
+              <div>
+                <ItemTitle>메뉴: {item.menu}</ItemTitle>
+                <ItemDetails>수량: {item.totalCount}</ItemDetails>
+                <TotalAmount>총액: {item.totalAmount}원</TotalAmount>
+              </div>
+            </StTitleBox>
             <ButtonBox>
               <QuantityBox>
                 <Button onClick={() => handleDecrease(index)}>-</Button>
@@ -256,7 +282,10 @@ const CartList: React.FC = () => {
           </CartItemContainer>
         ))
       )}
-      <Button onClick={handleCheckout}>결제하기</Button>
+      <Totalpayment>
+        <div>총 결제 금액 : {totalCartAmount}</div>
+        <Button onClick={handleCheckout}>결제하기</Button>
+      </Totalpayment>
     </CartListContainer>
   );
 };

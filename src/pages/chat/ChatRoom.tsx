@@ -8,7 +8,7 @@ import { useUser } from "../../hooks/useUser";
 import Button from "../../components/Button";
 
 const ChatContainer = styled.div`
-  max-width: 600px;
+  max-width: 100%;
   margin: 50px auto 0;
   padding: 20px;
   border: 1px solid #ddd;

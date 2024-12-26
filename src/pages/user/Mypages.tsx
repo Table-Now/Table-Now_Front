@@ -100,9 +100,17 @@ const Mypage: React.FC = () => {
 
       <ButtonBox>
         {role === "MANAGER" && (
-          <Button type="button" onClick={() => navigate("/storeregister")}>
-            상점 등록
-          </Button>
+          <>
+            <Button type="button" onClick={() => navigate("/storeregister")}>
+              상점 등록
+            </Button>
+            <Button
+              type="button"
+              onClick={() => navigate(`/store/manager/list/${user}`)}
+            >
+              매장 목록
+            </Button>
+          </>
         )}
 
         {role === "USER" && (
@@ -113,25 +121,16 @@ const Mypage: React.FC = () => {
             >
               예약 현황
             </Button>
-          </>
-        )}
-        {role === "USER" && (
-          <>
+
             <Button
               type="button"
               onClick={() => navigate(`/my/wishlist/${user}`)}
             >
               찜 목록
             </Button>
-          </>
-        )}
-        {role === "MANAGER" && (
-          <>
-            <Button
-              type="button"
-              onClick={() => navigate(`/store/manager/list/${user}`)}
-            >
-              매장 목록
+
+            <Button type="button" onClick={() => navigate(`/cart/list`)}>
+              장바구니
             </Button>
           </>
         )}

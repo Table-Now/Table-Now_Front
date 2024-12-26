@@ -19,14 +19,26 @@ const Join: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
 
+    if (name === "phone") {
+      // 하이픈을 자동으로 추가하는 로직
+      const formattedValue = value
+        .replace(/[^0-9]/g, "") // 숫자만 남기고 모두 제거
+        .replace(/^(\d{3})(\d{4})(\d{4})$/, "$1-$2-$3"); // 010-1234-1234 형태로 변환
+
+      setFormData((prev) => ({
+        ...prev,
+        [name]: formattedValue,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
   const validatePhone = (phone: string) => {
-    const phonePattern = /^010\d{8}$/;
+    const phonePattern = /^010-\d{4}-\d{4}$/; // 010-1234-1234 형태로 검증
     return phonePattern.test(phone);
   };
 
@@ -35,9 +47,7 @@ const Join: React.FC = () => {
     setError("");
 
     if (!validatePhone(formData.phone)) {
-      setError(
-        "휴대폰 번호는 010으로 시작하고 뒤에 8자리 숫자를 입력해야 합니다."
-      );
+      setError("휴대폰 번호는 010-1234-1234 형식으로 입력해야 합니다.");
       return;
     }
 

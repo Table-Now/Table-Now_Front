@@ -10,7 +10,6 @@ const Menu: React.FC<MenuProps> = ({ store, detailUser }) => {
   const { user } = useUser();
   const navigate = useNavigate();
   const [menuList, setMenuList] = useState<MenuItem[]>([]);
-  console.log(menuList);
 
   const fetchData = async () => {
     try {

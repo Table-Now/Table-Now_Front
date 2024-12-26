@@ -1,7 +1,7 @@
 import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
-  * {
+   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -14,16 +14,15 @@ const GlobalStyle = createGlobalStyle`
     background-color: #f8f9fa;
     color: #333;
     overflow-x: hidden;
+    padding-bottom: 50px; /* 헤더의 높이만큼 공간 추가 */
   }
 
-  /* 중앙 정렬 대신 최대 너비 제한 */
   #root, .app-container {
-    max-width: 768px; /* 최대 너비 설정 */
-    margin: 0 auto; /* 중앙 정렬 */
-    overflow-x: hidden; /* x축 스크롤 방지 */
+    max-width: 768px;
+    margin: 0 auto;
+    overflow-x: hidden;
   }
 
-  /* 글꼴 및 기본 텍스트 스타일 */
   h1, h2, h3, h4, h5, h6 {
     color: #222;
     font-weight: bold;
@@ -40,16 +39,15 @@ const GlobalStyle = createGlobalStyle`
     text-decoration: none;
   }
 
-  /* 반응형 스타일 */
   @media (max-width: 768px) {
     #root, .app-container {
-      padding: 0 1rem; /* 태블릿 이하의 여백 */
+      padding: 0 1rem;
     }
   }
 
   @media (max-width: 400px) {
     html, body {
-      font-size: 0.9rem; /* 최소 너비에서 폰트 크기 축소 */
+      font-size: 0.9rem;
     }
   }
 `;
