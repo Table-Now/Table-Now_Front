@@ -164,6 +164,7 @@ const StoreList: React.FC = () => {
             </StoreItem>
           ))
         )}
+        <div style={{ height: "100px" }}></div>
       </ListContainer>
     </>
   );

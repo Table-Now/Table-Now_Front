@@ -333,7 +333,6 @@ const DetailContainer = styled.div`
   margin: 50px auto;
   width: 95%;
   padding: 20px;
-  background-color: #f9f9f9;
   border-radius: 12px;
   position: relative;
 `;
