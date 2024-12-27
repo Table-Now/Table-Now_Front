@@ -23,6 +23,7 @@ import ChatRoom from "../pages/chat/ChatRoom";
 import MenuUpdate from "../pages/store/menu/MenuUpdate";
 import MenuDetail from "../pages/store/menu/MenuDetail";
 import CartList from "../pages/cart/CartList";
+import PaymentCheck from "../pages/cart/PaymentCheck";
 // import PortOne from "../pages/portOne/PortOne";
 
 interface ProtectedRouteProps {
@@ -109,6 +110,11 @@ const AppContent: React.FC = () => {
           element={<ProtectedRoute element={<CartList />} />}
         />
         <Route path="/chat" element={<ChatRoom />} />
+        <Route
+          path="/check"
+          element={<ProtectedRoute element={<PaymentCheck />} />}
+        />
+
         {/* <Route path="/port" element={<PortOne />} /> */}
       </Routes>
     </>

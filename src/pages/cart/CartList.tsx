@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { cartAPI, OrderType } from "../../api/cart";
+import { cartAPI } from "../../api/cart";
 import styled from "styled-components";
 import { useUser } from "../../hooks/useUser";
 import Button from "../../components/Button";
+import PaymentModal from "../../components/modal/PaymentModal";
+import { useNavigate } from "react-router-dom";
+import { OrderType } from "../../types/cart/Cart";
 
 interface CartItem {
   id: number;
@@ -83,10 +86,12 @@ const Totalpayment = styled.div`
 `;
 
 const CartList: React.FC = () => {
+  const navigate = useNavigate();
   const { user } = useUser();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchCartItems = async () => {
     try {
@@ -208,41 +213,50 @@ const CartList: React.FC = () => {
   //   }
   // };
 
-  const handleCheckout = async () => {
-    if (cartItems.length === 0) {
-      alert("장바구니가 비어있습니다.");
-      return;
-    }
-
-    const orderDetails = cartItems.map((item) => ({
-      menuId: item.menuId,
-      menuCount: item.totalCount,
-      totalPrice: item.totalAmount,
-    }));
-
-    const totalAmount = cartItems.reduce(
-      (sum, item) => sum + item.totalAmount,
-      0
-    );
-
-    const payload: OrderType = {
-      totalAmount,
-      payMethod: "card",
-      orderDetails,
-    };
-
-    try {
-      const response = await cartAPI.createOrder(payload);
-    } catch (error: any) {
-      console.error(error);
-      alert(error.response.data?.message);
-    }
-  };
-
   const totalCartAmount = cartItems.reduce(
     (sum, item) => sum + item.totalAmount,
     0
   );
+
+  const handlePaymentConfirm = async (
+    takeoutName: string,
+    takeoutPhone: string
+  ) => {
+    try {
+      const orderDetails = cartItems.map((item) => ({
+        menuId: item.menuId,
+        menu: item.menu,
+        menuCount: item.totalCount,
+        totalPrice: item.totalAmount,
+      }));
+
+      const totalAmount = cartItems.reduce(
+        (sum, item) => sum + item.totalAmount,
+        0
+      );
+
+      const orderPayload: OrderType = {
+        totalAmount: totalAmount,
+        payMethod: "CARD",
+        orderDetails: orderDetails,
+        takeoutName,
+        takeoutPhone,
+      };
+
+      await cartAPI.createOrder(orderPayload);
+      alert("주문이 완료되었습니다!");
+      navigate(`/check`);
+    } catch (error: any) {
+      console.error("Order error:", error);
+      alert(
+        error.response?.data?.message || "주문 처리 중 오류가 발생했습니다."
+      );
+    }
+  };
+
+  const handleCheckout = () => {
+    setIsModalOpen(true);
+  };
 
   if (loading) {
     return <div>로딩 중...</div>;
@@ -284,8 +298,17 @@ const CartList: React.FC = () => {
       )}
       <Totalpayment>
         <div>총 결제 금액 : {totalCartAmount}</div>
-        <Button onClick={handleCheckout}>결제하기</Button>
+        <Button type="button" onClick={handleCheckout}>
+          결제하기
+        </Button>
       </Totalpayment>
+
+      <PaymentModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        totalAmount={totalCartAmount}
+        onConfirm={handlePaymentConfirm}
+      />
     </CartListContainer>
   );
 };

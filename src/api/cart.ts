@@ -1,5 +1,5 @@
 import { instance } from "./instance";
-import { CartDto } from "../types/cart/Cart";
+import { CartDto, OrderCheck, OrderType } from "../types/cart/Cart";
 
 const getAuthHeader = () => {
   const token = sessionStorage.getItem("token");
@@ -59,7 +59,7 @@ export const cartAPI = {
   },
 
   createOrder: async (payload: OrderType): Promise<OrderType> => {
-    const response = await instance.post("/order/create", payload, {
+    const response = await instance.post<OrderType>("/orders/create", payload, {
       headers: {
         ...getAuthHeader(),
         "Content-Type": "application/json",
@@ -68,21 +68,15 @@ export const cartAPI = {
     return response.data;
   },
 
-  payment: async (paymentId: number) => {
-    const response = await instance.get(`/v1/api/payment/${paymentId}`);
-    return response.data;
+  getOrderCheck: async (user: string | null): Promise<OrderCheck> => {
+    try {
+      const response = await instance.get(`/orders/check/${user}`, {
+        headers: getAuthHeader(),
+      });
+      return response.data;
+    } catch (error) {
+      console.error("주문 확인 데이터 가져오기 실패:", error);
+      throw error;
+    }
   },
 };
-
-export interface OrderType {
-  totalAmount: number; // 총가격
-  payMethod: string; // 결제 방식
-  orderDetails: OrderDetailType[]; // 주문 상세 리스트
-}
-
-// Updated OrderDetailType interface
-export interface OrderDetailType {
-  menuId: number; // 메뉴 ID
-  menuCount: number; // 메뉴 수량
-  totalPrice: number; // 메뉴 총가격
-}
