@@ -22,6 +22,7 @@ export interface OrderType {
 
 export interface OrderCheckDetail {
   menuId: number;
+  store: string;
   menu: string;
   menuCount: number;
   totalPrice: number;

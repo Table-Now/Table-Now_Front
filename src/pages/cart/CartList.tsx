@@ -12,6 +12,7 @@ interface CartItem {
   userId: string;
   menuId: number;
   storeId: number;
+  storeName: string;
   totalCount: number;
   totalAmount: number;
   menu: string;
@@ -47,8 +48,15 @@ const CartItemContainer = styled.div`
   justify-content: space-between;
 `;
 
+const ItemStore = styled.div`
+  font-size: 20px;
+  font-weight: 800;
+  color: #333;
+  margin-bottom: 0.5rem;
+`;
+
 const ItemTitle = styled.h3`
-  font-size: 1.2rem;
+  font-size: 16px;
   color: #333;
   margin-bottom: 0.5rem;
 `;
@@ -135,7 +143,6 @@ const CartList: React.FC = () => {
   const handleUpdateCart = async (index: number) => {
     const cartItem = cartItems[index];
     try {
-      // CartDto 객체 생성
       const cartDto = {
         id: cartItem.id,
         userId: cartItem.userId,
@@ -146,72 +153,12 @@ const CartList: React.FC = () => {
       };
 
       await cartAPI.updateCart(user, cartDto);
-      fetchCartItems(); // 업데이트 후 카트 아이템 다시 가져오기
+      fetchCartItems();
     } catch (error) {
       console.error("카트 수정 중 오류 발생", error);
       setError("카트 수정 중 오류가 발생했습니다.");
     }
   };
-
-  // useEffect(() => {
-  //   const loadScript = (src: string) => {
-  //     return new Promise<void>((resolve, reject) => {
-  //       const script = document.createElement("script");
-  //       script.src = src;
-  //       script.onload = () => resolve();
-  //       script.onerror = (error) => reject(error);
-  //       document.body.appendChild(script);
-  //     });
-  //   };
-
-  //   const loadScripts = async () => {
-  //     try {
-  //       await loadScript("https://code.jquery.com/jquery-3.6.0.min.js");
-  //       await loadScript("https://cdn.iamport.kr/js/iamport.payment-1.1.8.js");
-  //     } catch (error) {
-  //       console.error("스크립트 로딩 중 오류 발생", error);
-  //     }
-  //   };
-
-  //   loadScripts();
-  // }, []);
-
-  // const handleCheckout = async () => {
-  //   if (!user || cartItems.length === 0) {
-  //     setError("로그인 후 결제 가능합니다.");
-  //     return;
-  //   }
-
-  //   if (window.IMP) {
-  //     const IMP = window.IMP;
-  //     // 이제 IMP를 사용할 수 있습니다
-
-  //     IMP.init("imp62440604");
-
-  //     const paymentData = {
-  //       pg: "html5_inicis",
-  //       pay_method: "card",
-  //       merchant_uid: `order_${new Date().getTime()}`,
-  //       name: "장바구니 결제",
-  //       amount: 1000,
-  //       buyer_email: "jominuk1025@naver.com",
-  //       buyer_name: "조민욱",
-  //       buyer_tel: "01033612489",
-  //       buyer_postcode: "123-456",
-  //     };
-
-  //     IMP.request_pay(paymentData, function (response: any) {
-  //       if (response.success) {
-  //         console.log(response);
-  //         alert("결제가 완료되었습니다.");
-  //       } else {
-  //         alert(`${response.error_msg}`);
-  //       }
-  //     });
-  //   } else {
-  //     setError("결제 서비스가 제대로 로드되지 않았습니다.");
-  //   }
-  // };
 
   const totalCartAmount = cartItems.reduce(
     (sum, item) => sum + item.totalAmount,
@@ -224,6 +171,7 @@ const CartList: React.FC = () => {
   ) => {
     try {
       const orderDetails = cartItems.map((item) => ({
+        store: item.storeName,
         menuId: item.menuId,
         menu: item.menu,
         menuCount: item.totalCount,
@@ -277,6 +225,7 @@ const CartList: React.FC = () => {
             <StTitleBox>
               <StImg src={item.image || "/img/noimage.jpg"} />
               <div>
+                <ItemStore>매장: {item.storeName}</ItemStore>
                 <ItemTitle>메뉴: {item.menu}</ItemTitle>
                 <ItemDetails>수량: {item.totalCount}</ItemDetails>
                 <TotalAmount>총액: {item.totalAmount}원</TotalAmount>

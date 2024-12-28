@@ -12,6 +12,63 @@ const PaymentCheck = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const loadScript = (src: string) => {
+      return new Promise<void>((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = src;
+        script.onload = () => resolve();
+        script.onerror = (error) => reject(error);
+        document.body.appendChild(script);
+      });
+    };
+
+    const loadScripts = async () => {
+      try {
+        await loadScript("https://code.jquery.com/jquery-3.6.0.min.js");
+        await loadScript("https://cdn.iamport.kr/js/iamport.payment-1.1.8.js");
+      } catch (error) {
+        console.error("스크립트 로딩 중 오류 발생", error);
+      }
+    };
+
+    loadScripts();
+  }, []);
+
+  const paymentHandler = async () => {
+    if (window.IMP) {
+      const IMP = window.IMP;
+      IMP.init("imp62440604");
+
+      // 첫 번째 매장의 이름 가져오기
+      const storeName =
+        orderData?.orderDetails?.length && orderData.orderDetails[0]?.store
+          ? orderData.orderDetails[0].store
+          : "TableNow";
+
+      const paymentData = {
+        pg: "html5_inicis",
+        pay_method: orderData?.payMethod,
+        merchant_uid: `orders_${new Date().getTime()}`,
+        name: storeName, // 여기서 store 이름 설정
+        amount: orderData?.totalAmount,
+        buyer_name: orderData?.takeoutName,
+        buyer_tel: orderData?.takeoutPhone,
+      };
+
+      IMP.request_pay(paymentData, function (response: any) {
+        if (response.success) {
+          console.log(response);
+          alert("결제가 완료되었습니다.");
+        } else {
+          alert(`${response.error_msg}`);
+        }
+      });
+    } else {
+      setError("결제 서비스가 제대로 로드되지 않았습니다.");
+    }
+  };
+
+  useEffect(() => {
     if (!user) {
       setLoading(false);
       return;
@@ -53,6 +110,7 @@ const PaymentCheck = () => {
         <Title>주문 세부사항</Title>
         {orderData.orderDetails.map((detail) => (
           <OrderCard key={detail.menuId}>
+            <CardInfo>매장: {detail.store}</CardInfo>
             <CardInfo>메뉴: {detail.menu}</CardInfo>
             <CardInfo>수량: {detail.menuCount}</CardInfo>
             <CardInfo>총 가격: {detail.totalPrice}원</CardInfo>
@@ -61,7 +119,9 @@ const PaymentCheck = () => {
       </Section>
 
       <ButtonBox>
-        <Button>결제</Button>
+        <Button type="button" onClick={paymentHandler}>
+          결제
+        </Button>
       </ButtonBox>
     </Container>
   );
