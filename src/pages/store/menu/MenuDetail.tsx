@@ -61,26 +61,18 @@ const MenuDetail: React.FC<MenuProps> = ({ store }) => {
       userId: user,
     };
 
-    // console.log("cartDto:", cartDto); // cartDto를 출력하여 값 확인
-
     try {
-      // 디버깅: 요청 전 상태 출력
-      // console.log("Sending request to add to cart...");
-
       const response = await cartAPI.addCart(storeId, cartDto);
-
-      // 디버깅: 응답 상태 확인
-      // console.log("Response from API:", response);
 
       if (response) {
         alert("장바구니에 추가되었습니다!");
-        navigate(-1); // 장바구니 추가 후 이전 페이지로 이동
+        navigate(-1);
       }
     } catch (err: any) {
-      console.error("카트 추가 실패:", err); // 에러를 콘솔에 출력
+      console.error("카트 추가 실패:", err);
       setError("장바구니에 추가하는 중 문제가 발생했습니다.");
     } finally {
-      setLoading(false); // 로딩 종료
+      setLoading(false);
     }
   };
 

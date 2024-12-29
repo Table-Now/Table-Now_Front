@@ -1,5 +1,11 @@
 import { instance } from "./instance";
-import { CartDto, OrderCheck, OrderType } from "../types/cart/Cart";
+import {
+  CartDto,
+  OrderCheck,
+  OrderType,
+  SettlementRequest,
+} from "../types/cart/Cart";
+import { SettlementData } from "../pages/settlement/Settlement";
 
 const getAuthHeader = () => {
   const token = sessionStorage.getItem("token");
@@ -78,5 +84,28 @@ export const cartAPI = {
       console.error("주문 확인 데이터 가져오기 실패:", error);
       throw error;
     }
+  },
+
+  createSettle: async (settlementData: SettlementRequest) => {
+    const response = await instance.post(
+      "/api/settlement/process",
+      settlementData,
+      {
+        headers: getAuthHeader(),
+      }
+    );
+    return response.data;
+  },
+
+  getTodaySettle: async (user: string | null): Promise<SettlementData[]> => {
+    const response = await instance.get<SettlementData[]>(
+      `/api/settlement/today/${user}`,
+      {
+        headers: getAuthHeader(),
+      }
+    );
+
+    // 데이터를 반환
+    return response.data;
   },
 };

@@ -33,5 +33,20 @@ export interface OrderCheck {
   takeoutPhone: string;
   totalAmount: number;
   payMethod: string;
+  impUid: string;
   orderDetails: OrderCheckDetail[];
+}
+
+export interface SettlementRequest {
+  settlementDetails: {
+    storeName: string;
+    menu: string;
+    menuCount: number;
+    totalPrice: number;
+  }[];
+  takeoutName: string;
+  takeoutPhone: string;
+  totalAmount: number;
+  // paymentId: string;
+  // payMethod: string;
 }

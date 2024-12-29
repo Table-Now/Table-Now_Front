@@ -4,13 +4,16 @@ import styled from "styled-components";
 import { OrderCheck } from "../../types/cart/Cart";
 import { cartAPI } from "../../api/cart";
 import Button from "../../components/Button";
+import { instance } from "../../api/instance";
+import { useNavigate } from "react-router-dom";
 
 const PaymentCheck = () => {
+  const navigate = useNavigate();
   const { user } = useUser();
   const [orderData, setOrderData] = useState<OrderCheck | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  console.log(orderData);
   useEffect(() => {
     const loadScript = (src: string) => {
       return new Promise<void>((resolve, reject) => {
@@ -35,30 +38,52 @@ const PaymentCheck = () => {
   }, []);
 
   const paymentHandler = async () => {
+    if (!orderData) {
+      setError("주문 데이터가 없습니다.");
+      return;
+    }
+
     if (window.IMP) {
       const IMP = window.IMP;
       IMP.init("imp62440604");
 
-      // 첫 번째 매장의 이름 가져오기
-      const storeName =
-        orderData?.orderDetails?.length && orderData.orderDetails[0]?.store
-          ? orderData.orderDetails[0].store
-          : "TableNow";
+      const storeName = orderData.orderDetails?.[0]?.store || "TableNow";
 
       const paymentData = {
         pg: "html5_inicis",
-        pay_method: orderData?.payMethod,
-        merchant_uid: `orders_${new Date().getTime()}`,
-        name: storeName, // 여기서 store 이름 설정
-        amount: orderData?.totalAmount,
-        buyer_name: orderData?.takeoutName,
-        buyer_tel: orderData?.takeoutPhone,
+        pay_method: orderData.payMethod,
+        merchant_uid: orderData.impUid,
+        name: storeName,
+        amount: orderData.totalAmount,
+        buyer_name: orderData.takeoutName,
+        buyer_tel: orderData.takeoutPhone,
       };
 
-      IMP.request_pay(paymentData, function (response: any) {
+      IMP.request_pay(paymentData, async function (response: any) {
         if (response.success) {
-          console.log(response);
-          alert("결제가 완료되었습니다.");
+          try {
+            const settlementData = {
+              settlementDetails: orderData.orderDetails.map((detail) => ({
+                storeName: detail.store,
+                menu: detail.menu,
+                menuCount: detail.menuCount,
+                totalPrice: detail.totalPrice,
+              })),
+              takeoutName: orderData.takeoutName,
+              takeoutPhone: orderData.takeoutPhone,
+              totalAmount: orderData.totalAmount,
+              // payMethod: orderData.payMethod,
+            };
+
+            await cartAPI.createSettle(settlementData);
+            alert("결제 및 주문이 완료되었습니다.");
+            navigate("/");
+          } catch (error) {
+            console.error("Settlement processing failed:", error);
+            alert(
+              "결제는 완료되었으나 주문 처리 중 오류가 발생했습니다. 고객센터에 문의해주세요."
+            );
+          }
         } else {
           alert(`${response.error_msg}`);
         }

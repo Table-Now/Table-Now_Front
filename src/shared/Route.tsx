@@ -24,6 +24,7 @@ import MenuUpdate from "../pages/store/menu/MenuUpdate";
 import MenuDetail from "../pages/store/menu/MenuDetail";
 import CartList from "../pages/cart/CartList";
 import PaymentCheck from "../pages/cart/PaymentCheck";
+import Settlement from "../pages/settlement/Settlement";
 // import PortOne from "../pages/portOne/PortOne";
 
 interface ProtectedRouteProps {
@@ -113,6 +114,10 @@ const AppContent: React.FC = () => {
         <Route
           path="/check"
           element={<ProtectedRoute element={<PaymentCheck />} />}
+        />
+        <Route
+          path="/settle"
+          element={<ProtectedRoute element={<Settlement />} />}
         />
 
         {/* <Route path="/port" element={<PortOne />} /> */}

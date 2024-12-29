@@ -101,6 +101,9 @@ const Mypage: React.FC = () => {
       <ButtonBox>
         {role === "MANAGER" && (
           <>
+            <Button type="button" onClick={() => navigate("/settlement")}>
+              정산 하기
+            </Button>
             <Button type="button" onClick={() => navigate("/storeregister")}>
               상점 등록
             </Button>
