@@ -46,7 +46,6 @@ const MenuDetail: React.FC<MenuProps> = ({ store }) => {
   const handleAddToCart = async () => {
     if (!storeId || !menuDetail) {
       setError("장바구니에 추가할 메뉴 정보가 잘못되었습니다.");
-      // console.log("Error: storeId or menuDetail is missing");
       return;
     }
 
@@ -69,8 +68,8 @@ const MenuDetail: React.FC<MenuProps> = ({ store }) => {
         navigate(-1);
       }
     } catch (err: any) {
+      alert(err.response?.data.message);
       console.error("카트 추가 실패:", err);
-      setError("장바구니에 추가하는 중 문제가 발생했습니다.");
     } finally {
       setLoading(false);
     }

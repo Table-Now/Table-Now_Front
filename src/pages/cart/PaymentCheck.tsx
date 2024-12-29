@@ -59,8 +59,9 @@ const PaymentCheck = () => {
         buyer_tel: orderData.takeoutPhone,
       };
 
-      IMP.request_pay(paymentData, async function (response: any) {
+      IMP.request_pay(paymentData, async (response: any) => {
         if (response.success) {
+          console.log(response); // 결제 성공 시 response 확인
           try {
             const settlementData = {
               settlementDetails: orderData.orderDetails.map((detail) => ({
@@ -72,10 +73,13 @@ const PaymentCheck = () => {
               takeoutName: orderData.takeoutName,
               takeoutPhone: orderData.takeoutPhone,
               totalAmount: orderData.totalAmount,
-              // payMethod: orderData.payMethod,
             };
 
+            // 1. 결제 처리
             await cartAPI.createSettle(settlementData);
+
+            // 2. 결제 검증을 위해 imp_uid로 GET 요청
+            await cartAPI.verifyPayment(response.imp_uid);
             alert("결제 및 주문이 완료되었습니다.");
             navigate("/");
           } catch (error) {

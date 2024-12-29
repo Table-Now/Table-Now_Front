@@ -104,8 +104,13 @@ export const cartAPI = {
         headers: getAuthHeader(),
       }
     );
+    return response.data;
+  },
 
-    // 데이터를 반환
+  verifyPayment: async (impUid: string) => {
+    const response = await instance.get(`v1/api/payment/verify/${impUid}`, {
+      headers: getAuthHeader(),
+    });
     return response.data;
   },
 };
