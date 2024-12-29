@@ -13,7 +13,7 @@ const PaymentCheck = () => {
   const [orderData, setOrderData] = useState<OrderCheck | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  console.log(orderData);
+
   useEffect(() => {
     const loadScript = (src: string) => {
       return new Promise<void>((resolve, reject) => {

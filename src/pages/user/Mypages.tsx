@@ -99,6 +99,9 @@ const Mypage: React.FC = () => {
       </UserInfoSection>
 
       <ButtonBox>
+        <Button type="button" onClick={() => navigate("/paymentdetails")}>
+          결재 내역
+        </Button>
         {role === "MANAGER" && (
           <>
             <Button type="button" onClick={() => navigate("/settle")}>

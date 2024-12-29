@@ -113,4 +113,16 @@ export const cartAPI = {
     });
     return response.data;
   },
+
+  getPaymentDetails: async (user: string | null) => {
+    try {
+      const response = await instance.get(`/orders/check/${user}`, {
+        headers: getAuthHeader(),
+      });
+      return response.data;
+    } catch (error) {
+      console.error("주문 확인 데이터 가져오기 실패:", error);
+      throw error;
+    }
+  },
 };

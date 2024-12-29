@@ -3,7 +3,6 @@ import { cartAPI } from "../../api/cart";
 import styled from "styled-components";
 import { useUser } from "../../hooks/useUser";
 import Button from "../../components/Button";
-import PaymentModal from "../../components/modal/PaymentModal";
 import { useNavigate } from "react-router-dom";
 import { OrderType } from "../../types/cart/Cart";
 
@@ -86,11 +85,47 @@ const QuantityBox = styled.div`
 `;
 
 const Totalpayment = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  margin-top: 20px;
   width: 100%;
+  max-width: 500px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
   gap: 20px;
+`;
+
+const TotalAmountText = styled.div`
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+`;
+
+const InputWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  label {
+    font-size: 16px;
+    color: #555;
+  }
+
+  input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+
+    &:focus {
+      border-color: #007bff;
+    }
+  }
 `;
 
 const CartList: React.FC = () => {
@@ -99,7 +134,31 @@ const CartList: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [takeoutName, setTakeoutName] = useState<string>("");
+  const [takeoutPhone, setTakeoutPhone] = useState<string>("");
+
+  useEffect(() => {
+    const loadScript = (src: string) => {
+      return new Promise<void>((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = src;
+        script.onload = () => resolve();
+        script.onerror = (error) => reject(error);
+        document.body.appendChild(script);
+      });
+    };
+
+    const loadScripts = async () => {
+      try {
+        await loadScript("https://code.jquery.com/jquery-3.6.0.min.js");
+        await loadScript("https://cdn.iamport.kr/js/iamport.payment-1.1.8.js");
+      } catch (error) {
+        console.error("스크립트 로딩 중 오류 발생", error);
+      }
+    };
+
+    loadScripts();
+  }, []);
 
   const fetchCartItems = async () => {
     try {
@@ -165,10 +224,7 @@ const CartList: React.FC = () => {
     0
   );
 
-  const handlePaymentConfirm = async (
-    takeoutName: string,
-    takeoutPhone: string
-  ) => {
+  const handleCheckout = async () => {
     try {
       const orderDetails = cartItems.map((item) => ({
         store: item.storeName,
@@ -178,32 +234,86 @@ const CartList: React.FC = () => {
         totalPrice: item.totalAmount,
       }));
 
-      const totalAmount = cartItems.reduce(
-        (sum, item) => sum + item.totalAmount,
-        0
-      );
-
       const orderPayload: OrderType = {
-        totalAmount: totalAmount,
+        totalAmount: totalCartAmount,
         payMethod: "CARD",
         orderDetails: orderDetails,
-        takeoutName,
-        takeoutPhone,
+        takeoutName: takeoutName,
+        takeoutPhone: takeoutPhone,
       };
 
       await cartAPI.createOrder(orderPayload);
       alert("주문이 완료되었습니다!");
-      navigate(`/check`);
+      navigate("/check");
     } catch (error: any) {
-      console.error("Order error:", error);
+      console.error("주문 오류:", error);
       alert(
         error.response?.data?.message || "주문 처리 중 오류가 발생했습니다."
       );
     }
   };
 
-  const handleCheckout = () => {
-    setIsModalOpen(true);
+  const paymentHandler = async () => {
+    const orderData = {
+      takeoutName,
+      takeoutPhone,
+      totalAmount: totalCartAmount,
+      payMethod: "CARD",
+      orderDetails: cartItems.map((item) => ({
+        store: item.storeName,
+        menuId: item.menuId,
+        menu: item.menu,
+        menuCount: item.totalCount,
+        totalPrice: item.totalAmount,
+      })),
+    };
+
+    if (window.IMP) {
+      const IMP = window.IMP;
+      IMP.init("imp62440604");
+
+      const paymentData = {
+        pg: "html5_inicis",
+        pay_method: orderData.payMethod,
+        merchant_uid: `orders_${new Date().getTime()}`,
+        name: cartItems[0]?.storeName || "매장 정보 없음",
+        amount: orderData.totalAmount,
+        buyer_name: orderData.takeoutName,
+        buyer_tel: orderData.takeoutPhone,
+      };
+
+      IMP.request_pay(paymentData, async (response: any) => {
+        if (response.success) {
+          try {
+            const settlementData = {
+              settlementDetails: orderData.orderDetails.map((detail) => ({
+                storeName: detail.store,
+                menu: detail.menu,
+                menuCount: detail.menuCount,
+                totalPrice: detail.totalPrice,
+              })),
+              takeoutName: orderData.takeoutName,
+              takeoutPhone: orderData.takeoutPhone,
+              totalAmount: orderData.totalAmount,
+            };
+
+            // 결제 처리 및 결제 검증
+            await cartAPI.createSettle(settlementData);
+            await cartAPI.verifyPayment(response.imp_uid);
+
+            alert("결제 및 주문이 완료되었습니다.");
+            navigate("/");
+          } catch (error) {
+            console.error("결제 처리 중 오류 발생", error);
+            alert("결제는 완료되었으나 주문 처리 중 오류가 발생했습니다.");
+          }
+        } else {
+          alert(`${response.error_msg}`);
+        }
+      });
+    } else {
+      setError("결제 서비스가 제대로 로드되지 않았습니다.");
+    }
   };
 
   if (loading) {
@@ -246,18 +356,41 @@ const CartList: React.FC = () => {
         ))
       )}
       <Totalpayment>
-        <div>총 결제 금액 : {totalCartAmount}</div>
-        <Button type="button" onClick={handleCheckout}>
+        <TotalAmountText>총 결제 금액 : {totalCartAmount}원</TotalAmountText>
+        <InputWrapper>
+          <div>
+            <label>
+              주문자
+              <input
+                type="text"
+                value={takeoutName}
+                onChange={(e) => setTakeoutName(e.target.value)}
+                placeholder="주문자명을 입력하세요"
+                style={{ marginLeft: "10px" }}
+              />
+            </label>
+          </div>
+          <div>
+            <label>
+              핸드폰
+              <input
+                type="text"
+                value={takeoutPhone}
+                onChange={(e) => setTakeoutPhone(e.target.value)}
+                placeholder="010-1234-1234"
+                style={{ marginLeft: "10px" }}
+              />
+            </label>
+          </div>
+        </InputWrapper>
+        <Button
+          type="button"
+          onClick={paymentHandler}
+          disabled={!takeoutName || !takeoutPhone}
+        >
           결제하기
         </Button>
       </Totalpayment>
-
-      <PaymentModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        totalAmount={totalCartAmount}
-        onConfirm={handlePaymentConfirm}
-      />
     </CartListContainer>
   );
 };
