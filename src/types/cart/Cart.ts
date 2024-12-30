@@ -17,6 +17,7 @@ export interface OrderType {
   takeoutPhone: string;
   totalAmount: number;
   payMethod: string;
+  uuid: string;
   orderDetails: OrderDetailType[];
 }
 

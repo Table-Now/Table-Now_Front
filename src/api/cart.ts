@@ -125,4 +125,14 @@ export const cartAPI = {
       throw error;
     }
   },
+
+  deletePayment: async (impUid: string | null) => {
+    const response = await instance.post("v1/api/payment/cancel", impUid, {
+      headers: {
+        ...getAuthHeader(),
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  },
 };

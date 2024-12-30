@@ -224,36 +224,9 @@ const CartList: React.FC = () => {
     0
   );
 
-  const handleCheckout = async () => {
-    try {
-      const orderDetails = cartItems.map((item) => ({
-        store: item.storeName,
-        menuId: item.menuId,
-        menu: item.menu,
-        menuCount: item.totalCount,
-        totalPrice: item.totalAmount,
-      }));
-
-      const orderPayload: OrderType = {
-        totalAmount: totalCartAmount,
-        payMethod: "CARD",
-        orderDetails: orderDetails,
-        takeoutName: takeoutName,
-        takeoutPhone: takeoutPhone,
-      };
-
-      await cartAPI.createOrder(orderPayload);
-      alert("주문이 완료되었습니다!");
-      navigate("/check");
-    } catch (error: any) {
-      console.error("주문 오류:", error);
-      alert(
-        error.response?.data?.message || "주문 처리 중 오류가 발생했습니다."
-      );
-    }
-  };
-
   const paymentHandler = async () => {
+    const uniqueId = `orders_${Date.now()}`;
+
     const orderData = {
       takeoutName,
       takeoutPhone,
@@ -275,7 +248,7 @@ const CartList: React.FC = () => {
       const paymentData = {
         pg: "html5_inicis",
         pay_method: orderData.payMethod,
-        merchant_uid: `orders_${new Date().getTime()}`,
+        merchant_uid: uniqueId,
         name: cartItems[0]?.storeName || "매장 정보 없음",
         amount: orderData.totalAmount,
         buyer_name: orderData.takeoutName,
@@ -285,6 +258,23 @@ const CartList: React.FC = () => {
       IMP.request_pay(paymentData, async (response: any) => {
         if (response.success) {
           try {
+            const createOrderDetails = cartItems.map((item) => ({
+              store: item.storeName,
+              menuId: item.menuId,
+              menu: item.menu,
+              menuCount: item.totalCount,
+              totalPrice: item.totalAmount,
+            }));
+
+            const createOrderPayload: OrderType = {
+              totalAmount: totalCartAmount,
+              payMethod: "CARD",
+              orderDetails: createOrderDetails,
+              takeoutName: takeoutName,
+              takeoutPhone: takeoutPhone,
+              uuid: uniqueId,
+            };
+
             const settlementData = {
               settlementDetails: orderData.orderDetails.map((detail) => ({
                 storeName: detail.store,
@@ -297,6 +287,7 @@ const CartList: React.FC = () => {
               totalAmount: orderData.totalAmount,
             };
 
+            await cartAPI.createOrder(createOrderPayload);
             // 결제 처리 및 결제 검증
             await cartAPI.createSettle(settlementData);
             await cartAPI.verifyPayment(response.imp_uid);

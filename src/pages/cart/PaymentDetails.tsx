@@ -34,10 +34,14 @@ const PaymentDetails = () => {
     }
   };
 
-  const handleCancelPayment = (impUid: string | null) => {
-    if (impUid) {
-      console.log(`결제 취소 요청: ${impUid}`);
-      // 결제 취소 로직을 여기에 추가
+  const handleCancelPayment = async (impUid: string | null) => {
+    console.log("impUid", impUid);
+    try {
+      await cartAPI.deletePayment(impUid);
+      alert("결제 취소 되었습니다.");
+      fetchData();
+    } catch (err: any) {
+      alert(err.response?.data.message);
     }
   };
 
